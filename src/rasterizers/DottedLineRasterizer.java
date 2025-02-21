@@ -6,13 +6,13 @@ import rasters.Raster;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class TrivialLineRasterizer implements Rasterizer {
+public class DottedLineRasterizer implements Rasterizer {
     private Raster raster;
 
     @Override
     public void setColor(Color color) {}
 
-    public TrivialLineRasterizer(Raster raster) {
+    public DottedLineRasterizer(Raster raster) {
         this.raster = raster;
     }
 
@@ -23,6 +23,8 @@ public class TrivialLineRasterizer implements Rasterizer {
         int x2 = line.getPoint2().getX();
         int y2 = line.getPoint2().getY();
 
+        int dotSpace = 2;
+        int untilDot = 1;
 
         int xDiff = x2 - x1;
         int yDiff = y2 - y1;
@@ -35,8 +37,12 @@ public class TrivialLineRasterizer implements Rasterizer {
             int lesserX = Math.min(x1, x2);
 
             for (int x = lesserX; x <= greaterX; x++) {
-                int y = Math.round(k * x + q);
-                raster.setPixel(x, y, line.getColor().getRGB());
+                untilDot--;
+                if (untilDot < 0) {
+                    int y = Math.round(k * x + q);
+                    raster.setPixel(x, y, line.getColor().getRGB());
+                    untilDot = dotSpace;
+                }
             }
         } else {
             float k = (float) xDiff / yDiff;
@@ -46,8 +52,12 @@ public class TrivialLineRasterizer implements Rasterizer {
             int lesserY = Math.min(y1, y2);
 
             for (int y = lesserY; y <= greaterY; y++) {
-                int x = Math.round(k * y + q);
-                raster.setPixel(x, y, line.getColor().getRGB());
+                untilDot--;
+                if (untilDot < 0) {
+                    int x = Math.round(k * y + q);
+                    raster.setPixel(x, y, line.getColor().getRGB());
+                    untilDot = dotSpace;
+                }
             }
         }
     }
