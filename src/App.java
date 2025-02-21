@@ -1,6 +1,8 @@
+import enums.LineType;
 import models.Line;
 import models.LineCanvas;
 import models.Point;
+import rasterizers.DashedLineRasterizer;
 import rasterizers.DottedLineRasterizer;
 import rasterizers.Rasterizer;
 import rasterizers.TrivialLineRasterizer;
@@ -15,6 +17,9 @@ import java.awt.event.MouseEvent;
 import java.io.Serial;
 
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class App {
 
@@ -27,10 +32,12 @@ public class App {
     private Point point;
     private Rasterizer rasterizer;
     private Rasterizer dottedRasterizer;
+    private Rasterizer dashedRasterizer;
     private LineCanvas canvas;
 
     private Color currentColor = Color.white;
     private boolean ctrlMode = false;
+    private LineType currentMode = LineType.DEFAULT;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new App(800, 600).start());
@@ -79,6 +86,7 @@ public class App {
 
         rasterizer = new TrivialLineRasterizer(raster);
         dottedRasterizer = new DottedLineRasterizer(raster);
+        dashedRasterizer = new DashedLineRasterizer(raster);
         canvas = new LineCanvas();
 
         createAdapters();
@@ -100,53 +108,75 @@ public class App {
             @Override
             public void mouseReleased(MouseEvent e) {
                 Point point2 = new Point(e.getX(), e.getY());
+                Line line = new Line(point, point2, currentColor, currentMode);
 
-                Line line = new Line(point, point2, currentColor, ctrlMode);
+                raster.clear(); // Clear the canvass
+                canvas.addLine(line); // Add currently drawn line to the canvas
+                renderLines(canvas.getLines()); // Render all lines
 
-                raster.clear();
-                canvas.addLine(line);
-
-                for (Line lineToRender : canvas.getLines()) {
-                    if (lineToRender.getIsDotted()) { dottedRasterizer.rasterize(lineToRender); }
-                    else { rasterizer.rasterize(lineToRender); }
-                }
-
-                panel.repaint();
+                panel.repaint(); // Update the canvas
             }
 
             public void mouseDragged(MouseEvent e) {
                 Point point2 = new Point(e.getX(), e.getY());
+                Line line = new Line(point, point2, currentColor, currentMode);
 
-                Line line = new Line(point, point2, currentColor, ctrlMode);
+                raster.clear(); // Clear the canvas
+                renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
+                renderLines(canvas.getLines()); // Render all already drawn lines
 
-                raster.clear();
-
-                for (Line lineToRender : canvas.getLines()) {
-                    if (lineToRender.getIsDotted()) { dottedRasterizer.rasterize(lineToRender); }
-                    else { rasterizer.rasterize(lineToRender); }
-                }
-
-                if (line.getIsDotted()) { dottedRasterizer.rasterize(line); }
-                else { rasterizer.rasterize(line); }
-
-                panel.repaint();
+                panel.repaint(); // Update the canvas
             }
         };
 
         keyAdapter = new KeyAdapter() {
+            ArrayList<Integer> pressedKeys = new ArrayList<Integer>();
+
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-                    ctrlMode = true;
-                }
+                pressedKeys.add(e.getKeyCode());
+                updateMode();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-                    ctrlMode = false;
+                pressedKeys.remove(Integer.valueOf(e.getKeyCode()));
+                updateMode();
+            }
+
+            private void updateMode() {
+                if (pressedKeys.size() != 1) {
+                    currentMode = LineType.DEFAULT;
+                    return;
+                }
+
+                switch (pressedKeys.getFirst()) {
+                    case KeyEvent.VK_CONTROL:
+                        currentMode = LineType.DOTTED;
+                        break;
+                    case KeyEvent.VK_SHIFT:
+                        currentMode = LineType.DASHED;
+                        break;
+                    default:
+                        currentMode = LineType.DEFAULT;
                 }
             }
         };
+    }
+
+    private void renderLines(ArrayList<Line> lines) {
+        for (Line line : lines) {
+            switch (line.getLineType()) {
+                case LineType.DEFAULT:
+                    rasterizer.rasterize(line);
+                    break;
+                case LineType.DOTTED:
+                    dottedRasterizer.rasterize(line);
+                    break;
+                case LineType.DASHED:
+                    dashedRasterizer.rasterize(line);
+                    break;
+            }
+        }
     }
 }

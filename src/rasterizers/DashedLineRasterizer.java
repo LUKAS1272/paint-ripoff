@@ -6,13 +6,13 @@ import rasters.Raster;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class DottedLineRasterizer implements Rasterizer {
+public class DashedLineRasterizer implements Rasterizer {
     private Raster raster;
 
     @Override
     public void setColor(Color color) {}
 
-    public DottedLineRasterizer(Raster raster) {
+    public DashedLineRasterizer(Raster raster) {
         this.raster = raster;
     }
 
@@ -23,7 +23,10 @@ public class DottedLineRasterizer implements Rasterizer {
         int x2 = line.getPoint2().getX();
         int y2 = line.getPoint2().getY();
 
-        int spaceLength = 10;
+        int dashLength = 10;
+        int spaceLength = 5;
+
+        int untilSpace = dashLength;
 
         int xDiff = x2 - x1;
         int yDiff = y2 - y1;
@@ -39,7 +42,11 @@ public class DottedLineRasterizer implements Rasterizer {
                 int y = Math.round(k * x + q);
                 raster.setPixel(x, y, line.getColor().getRGB());
 
-                x += spaceLength;
+                untilSpace--;
+                if (untilSpace == 0) {
+                    x += spaceLength;
+                    untilSpace = dashLength;
+                }
             }
         } else {
             float k = (float) xDiff / yDiff;
@@ -52,7 +59,11 @@ public class DottedLineRasterizer implements Rasterizer {
                 int x = Math.round(k * y + q);
                 raster.setPixel(x, y, line.getColor().getRGB());
 
-                y += spaceLength;
+                untilSpace--;
+                if (untilSpace == 0) {
+                    y += spaceLength;
+                    untilSpace = dashLength;
+                }
             }
         }
     }

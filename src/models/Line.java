@@ -1,18 +1,20 @@
 package models;
 
+import enums.LineType;
+
 import java.awt.Color;
 
 public class Line {
     private Point point1;
     private Point point2;
     private Color color;
-    private boolean isDotted;
+    private LineType lineType;
 
-    public Line(Point point1, Point point2, Color color, boolean isDotted) {
+    public Line(Point point1, Point point2, Color color, LineType lineType) {
         this.point1 = point1;
         this.point2 = point2;
         this.color = color;
-        this.isDotted = isDotted;
+        this.lineType = lineType;
     }
 
     public Point getPoint1() {
@@ -27,7 +29,7 @@ public class Line {
         return color;
     }
 
-    public boolean getIsDotted() {
-        return isDotted;
+    public LineType getLineType() {
+        return lineType;
     }
 }
