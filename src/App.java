@@ -1,3 +1,4 @@
+import enums.Alignment;
 import enums.LineType;
 import models.Line;
 import models.LineCanvas;
@@ -36,8 +37,8 @@ public class App {
     private LineCanvas canvas;
 
     private Color currentColor = Color.white;
-    private boolean ctrlMode = false;
     private LineType currentMode = LineType.DEFAULT;
+    private Alignment currentAlignment = Alignment.UNALIGNED;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new App(800, 600).start());
@@ -108,7 +109,7 @@ public class App {
             @Override
             public void mouseReleased(MouseEvent e) {
                 Point point2 = new Point(e.getX(), e.getY());
-                Line line = new Line(point, point2, currentColor, currentMode);
+                Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
                 raster.clear(); // Clear the canvass
                 canvas.addLine(line); // Add currently drawn line to the canvas
@@ -119,7 +120,7 @@ public class App {
 
             public void mouseDragged(MouseEvent e) {
                 Point point2 = new Point(e.getX(), e.getY());
-                Line line = new Line(point, point2, currentColor, currentMode);
+                Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
                 raster.clear(); // Clear the canvas
                 renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
@@ -136,16 +137,18 @@ public class App {
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
                 updateMode();
+                updateAlignment();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 pressedKeys.remove(Integer.valueOf(e.getKeyCode()));
                 updateMode();
+                updateAlignment();
             }
 
             private void updateMode() {
-                if (pressedKeys.size() != 1) {
+                if (pressedKeys.size() < 1) {
                     currentMode = LineType.DEFAULT;
                     return;
                 }
@@ -154,11 +157,19 @@ public class App {
                     case KeyEvent.VK_CONTROL:
                         currentMode = LineType.DOTTED;
                         break;
-                    case KeyEvent.VK_SHIFT:
+                    case KeyEvent.VK_ALT:
                         currentMode = LineType.DASHED;
                         break;
                     default:
                         currentMode = LineType.DEFAULT;
+                }
+            }
+
+            private void updateAlignment() {
+                if (pressedKeys.contains(KeyEvent.VK_SHIFT)) {
+                    currentAlignment = Alignment.ALIGNED;
+                } else {
+                    currentAlignment = Alignment.UNALIGNED;
                 }
             }
         };

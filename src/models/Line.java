@@ -1,5 +1,6 @@
 package models;
 
+import enums.Alignment;
 import enums.LineType;
 
 import java.awt.Color;
@@ -9,12 +10,14 @@ public class Line {
     private Point point2;
     private Color color;
     private LineType lineType;
+    private Alignment alignment;
 
-    public Line(Point point1, Point point2, Color color, LineType lineType) {
+    public Line(Point point1, Point point2, Color color, LineType lineType, Alignment alignment) {
         this.point1 = point1;
         this.point2 = point2;
         this.color = color;
         this.lineType = lineType;
+        this.alignment = alignment;
     }
 
     public Point getPoint1() {
@@ -31,5 +34,9 @@ public class Line {
 
     public LineType getLineType() {
         return lineType;
+    }
+
+    public Alignment getAlignment() {
+        return alignment;
     }
 }
