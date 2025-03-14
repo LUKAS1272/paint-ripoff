@@ -1,4 +1,6 @@
-package models;
+package models.canvases;
+
+import models.Line;
 
 import java.util.ArrayList;
 

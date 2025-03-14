@@ -1,12 +1,12 @@
 import enums.Alignment;
 import enums.LineType;
+import enums.ObjectType;
 import models.Line;
-import models.LineCanvas;
+import models.Polygon;
+import models.canvases.LineCanvas;
 import models.Point;
-import rasterizers.DashedLineRasterizer;
-import rasterizers.DottedLineRasterizer;
-import rasterizers.Rasterizer;
-import rasterizers.TrivialLineRasterizer;
+import models.canvases.PolygonCanvas;
+import rasterizers.*;
 import rasters.Raster;
 import rasters.RasterBufferedImage;
 
@@ -29,18 +29,25 @@ public class App {
     private final Raster raster;
 
     private MouseAdapter mouseAdapter;
-    private int currentButton = MouseEvent.NOBUTTON;
     private KeyAdapter keyAdapter;
 
+    private Color currentColor = Color.white;
     private Point point = null;
+
+    // Rasterizers
     private Rasterizer rasterizer;
     private Rasterizer dottedRasterizer;
     private Rasterizer dashedRasterizer;
-    private LineCanvas canvas;
 
-    private Color currentColor = Color.white;
+    // Canvases
+    private LineCanvas canvas;
+    private PolygonCanvas polygonCanvas;
+
+    // Enum modes
     private LineType currentMode = LineType.DEFAULT;
+    private ObjectType currentObject = ObjectType.LINE;
     private Alignment currentAlignment = Alignment.UNALIGNED;
+    private int currentButton = MouseEvent.NOBUTTON;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new App(width, height).start());
@@ -90,7 +97,9 @@ public class App {
         rasterizer = new TrivialLineRasterizer(raster);
         dottedRasterizer = new DottedLineRasterizer(raster);
         dashedRasterizer = new DashedLineRasterizer(raster);
+
         canvas = new LineCanvas();
+        polygonCanvas = new PolygonCanvas();
 
         createAdapters();
         panel.addMouseListener(mouseAdapter);
@@ -116,10 +125,20 @@ public class App {
             @Override
             public void mousePressed(MouseEvent e) {
                 currentButton = e.getButton(); // Register currently pressed mouse button
-                point = null;
 
                 if (currentButton == MouseEvent.BUTTON1) {
-                    point = new Point(e.getX(), e.getY());
+                    if (currentObject == ObjectType.LINE) {
+                        point = new Point(e.getX(), e.getY());
+                    } else if (currentObject == ObjectType.POLYGON) {
+                        if (point == null) { // If there is no point created, create one and register polygon
+                            point = new Point(e.getX(), e.getY());
+                            polygonCanvas.addPolygon(new Polygon(point, currentColor, currentMode));
+                        } else { // Otherwise add current point to the polygon and rerender
+                            point = new Point(e.getX(), e.getY());
+                            polygonCanvas.editLastPolygon(point);
+                            rerender();
+                        }
+                    }
                 } else if (currentButton == MouseEvent.BUTTON3 || currentButton == MouseEvent.BUTTON2) {
                     int lineIndex = -1;
                     Point otherPoint = null;
@@ -154,29 +173,24 @@ public class App {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (point != null) {
+                if (point != null && currentObject == ObjectType.LINE) {
                     Point point2 = new Point(e.getX(), e.getY());
                     Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
-                    raster.clear(); // Clear the canvass
                     canvas.addLine(line); // Add currently drawn line to the canvas
-                    renderLines(canvas.getLines()); // Render all lines
-
-                    panel.repaint(); // Update the canvas
+                    rerender();
                 }
 
                 currentButton = MouseEvent.NOBUTTON; // Reset currently pressed mouse button
             }
 
             public void mouseDragged(MouseEvent e) {
-                if (point != null) {
+                if (point != null && currentObject == ObjectType.LINE) {
                     Point point2 = new Point(e.getX(), e.getY());
                     Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
-                    raster.clear(); // Clear the canvas
+                    rerender();
                     renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
-                    renderLines(canvas.getLines()); // Render all already drawn lines
-
                     panel.repaint(); // Update the canvas
                 }
             }
@@ -190,23 +204,28 @@ public class App {
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
                     raster.clear();
                     canvas.clearLines();
+                    polygonCanvas.clearPolygons();
                     panel.repaint();
                 }
 
                 pressedKeys.add(e.getKeyCode());
-                updateMode();
-                updateAlignment();
+                update();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 pressedKeys.remove(Integer.valueOf(e.getKeyCode()));
+                update();
+            }
+
+            private void update() {
                 updateMode();
                 updateAlignment();
+                updateObject();
             }
 
             private void updateMode() {
-                if (pressedKeys.size() < 1) {
+                if (pressedKeys.isEmpty()) {
                     currentMode = LineType.DEFAULT;
                     return;
                 }
@@ -230,7 +249,26 @@ public class App {
                     currentAlignment = Alignment.UNALIGNED;
                 }
             }
+
+            private void updateObject() {
+                if (pressedKeys.contains(KeyEvent.VK_E)) {
+                    point = null; // Reset point for purpose of creating polygons
+                    ObjectType[] allObjects = ObjectType.values(); // Gets all objects
+                    currentObject = allObjects[(currentObject.ordinal() + 1) % allObjects.length]; // Reassigns new object
+                }
+            }
         };
+    }
+
+    private void rerender()  {
+        raster.clear();
+        renderLines(canvas.getLines());
+
+        for (Polygon polygon : polygonCanvas.getPolygons()) {
+            rasterizer.rasterizeArray(polygon.getLines());
+        }
+
+        panel.repaint();
     }
 
     private void renderLines(ArrayList<Line> lines) {
