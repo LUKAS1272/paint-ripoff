@@ -38,7 +38,10 @@ public class TrivialLineRasterizer implements Rasterizer {
 
             for (int x = lesserX; x <= greaterX; x++) {
                 int y = Math.round(k * x + q);
-                raster.setPixel(x, y, line.getColor().getRGB());
+
+                if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
+                    raster.setPixel(x, y, line.getColor().getRGB());
+                }
             }
         } else {
             float k = (float) xDiff / yDiff;
@@ -50,7 +53,10 @@ public class TrivialLineRasterizer implements Rasterizer {
 
             for (int y = lesserY; y <= greaterY; y++) {
                 int x = Math.round(k * y + q);
-                raster.setPixel(x, y, line.getColor().getRGB());
+
+                if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
+                    raster.setPixel(x, y, line.getColor().getRGB());
+                }
             }
         }
     }
