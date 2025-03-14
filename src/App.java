@@ -19,18 +19,20 @@ import java.io.Serial;
 
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
+    static public int width = 800;
+    static public int height = 600;
 
     private final JPanel panel;
     private final Raster raster;
 
     private MouseAdapter mouseAdapter;
+    private int currentButton = MouseEvent.NOBUTTON;
     private KeyAdapter keyAdapter;
 
-    private Point point;
+    private Point point = null;
     private Rasterizer rasterizer;
     private Rasterizer dottedRasterizer;
     private Rasterizer dashedRasterizer;
@@ -41,7 +43,7 @@ public class App {
     private Alignment currentAlignment = Alignment.UNALIGNED;
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new App(800, 600).start());
+        SwingUtilities.invokeLater(() -> new App(width, height).start());
     }
 
     public void clear(int color) {
@@ -99,39 +101,89 @@ public class App {
         panel.requestFocusInWindow();
     }
 
+    private float getDistance(Point p, int x, int y) {
+        int px = p.getX();
+        int py = p.getY();
+
+        int xDiff = Math.abs(px - x);
+        int yDiff = Math.abs(py - y);
+
+        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
+    }
+
     private void createAdapters() {
         mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                point = new Point(e.getX(), e.getY());
+                currentButton = e.getButton(); // Register currently pressed mouse button
+                point = null;
+
+                if (currentButton == MouseEvent.BUTTON1) {
+                    point = new Point(e.getX(), e.getY());
+                } else if (currentButton == MouseEvent.BUTTON3 || currentButton == MouseEvent.BUTTON2) {
+                    int lineIndex = -1;
+                    Point otherPoint = null;
+                    float closestDistance = Float.MAX_VALUE;
+
+                    int index = 0;
+                    for (Line line : canvas.getLines()) {
+                        float distanceP1 = getDistance(line.getPoint1(), e.getX(), e.getY());
+                        float distanceP2 = getDistance(line.getPoint2(), e.getX(), e.getY());
+
+                        if (distanceP1 < closestDistance) {
+                            otherPoint = line.getPoint2();
+                            closestDistance = distanceP1;
+                            lineIndex = index;
+                        }
+
+                        if (distanceP2 < closestDistance) {
+                            otherPoint = line.getPoint1();
+                            closestDistance = distanceP2;
+                            lineIndex = index;
+                        }
+
+                        index++;
+                    }
+
+                    if (closestDistance <= 30) {
+                        point = new Point(otherPoint.getX(), otherPoint.getY());
+                        canvas.removeLineAt(lineIndex);
+                    }
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                Point point2 = new Point(e.getX(), e.getY());
-                Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
+                if (point != null) {
+                    Point point2 = new Point(e.getX(), e.getY());
+                    Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
-                raster.clear(); // Clear the canvass
-                canvas.addLine(line); // Add currently drawn line to the canvas
-                renderLines(canvas.getLines()); // Render all lines
+                    raster.clear(); // Clear the canvass
+                    canvas.addLine(line); // Add currently drawn line to the canvas
+                    renderLines(canvas.getLines()); // Render all lines
 
-                panel.repaint(); // Update the canvas
+                    panel.repaint(); // Update the canvas
+                }
+
+                currentButton = MouseEvent.NOBUTTON; // Reset currently pressed mouse button
             }
 
             public void mouseDragged(MouseEvent e) {
-                Point point2 = new Point(e.getX(), e.getY());
-                Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
+                if (point != null) {
+                    Point point2 = new Point(e.getX(), e.getY());
+                    Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
-                raster.clear(); // Clear the canvas
-                renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
-                renderLines(canvas.getLines()); // Render all already drawn lines
+                    raster.clear(); // Clear the canvas
+                    renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
+                    renderLines(canvas.getLines()); // Render all already drawn lines
 
-                panel.repaint(); // Update the canvas
+                    panel.repaint(); // Update the canvas
+                }
             }
         };
 
         keyAdapter = new KeyAdapter() {
-            ArrayList<Integer> pressedKeys = new ArrayList<Integer>();
+            ArrayList<Integer> pressedKeys = new ArrayList<>();
 
             @Override
             public void keyPressed(KeyEvent e) {

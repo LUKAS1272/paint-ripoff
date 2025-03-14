@@ -13,9 +13,11 @@ public class LineCanvas {
         this.lines.add(line);
     }
 
-    public void clearLine() {
-        this.lines.clear();
-    }
+    public void clearLines() { this.lines.clear(); }
+
+    public void removeLineAt(int index) { this.lines.remove(index); }
+
+    public Line getLineAt(int index) { return this.lines.get(index); }
 
     public ArrayList<Line> getLines() {
         return lines;
