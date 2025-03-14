@@ -187,6 +187,12 @@ public class App {
 
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    raster.clear();
+                    canvas.clearLines();
+                    panel.repaint();
+                }
+
                 pressedKeys.add(e.getKeyCode());
                 updateMode();
                 updateAlignment();
