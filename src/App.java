@@ -1,6 +1,7 @@
 import enums.Alignment;
 import enums.LineType;
 import enums.ObjectType;
+import fillers.BasicFiller;
 import models.Line;
 import models.Polygon;
 import models.canvases.LineCanvas;
@@ -22,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class App {
-    static public int width = 800;
-    static public int height = 600;
+    static public int width = 1920;
+    static public int height = 1080;
 
     private final JPanel panel;
     private final Raster raster;
@@ -38,6 +39,9 @@ public class App {
     private Rasterizer rasterizer;
     private Rasterizer dottedRasterizer;
     private Rasterizer dashedRasterizer;
+
+    // Fillers
+    private BasicFiller basicFiller;
 
     // Canvases
     private LineCanvas canvas;
@@ -64,7 +68,7 @@ public class App {
 
     public void start() {
         clear(0xaaaaaa);
-        panel.repaint();
+        rerender();
     }
 
     public App(int width, int height) {
@@ -98,6 +102,8 @@ public class App {
         dottedRasterizer = new DottedLineRasterizer(raster);
         dashedRasterizer = new DashedLineRasterizer(raster);
 
+        basicFiller = new BasicFiller(raster);
+
         canvas = new LineCanvas();
         polygonCanvas = new PolygonCanvas();
 
@@ -127,17 +133,25 @@ public class App {
                 currentButton = e.getButton(); // Register currently pressed mouse button
 
                 if (currentButton == MouseEvent.BUTTON1) {
-                    if (currentObject == ObjectType.LINE) {
-                        point = new Point(e.getX(), e.getY());
-                    } else if (currentObject == ObjectType.POLYGON) {
-                        if (point == null) { // If there is no point created, create one and register polygon
+                    switch (currentObject) {
+                        case LINE:
                             point = new Point(e.getX(), e.getY());
-                            polygonCanvas.addPolygon(new Polygon(point, currentColor, currentMode));
-                        } else { // Otherwise add current point to the polygon and rerender
-                            point = new Point(e.getX(), e.getY());
-                            polygonCanvas.editLastPolygon(point);
+                            break;
+                        case POLYGON:
+                            if (point == null) { // If there is no point created, create one and register polygon
+                                point = new Point(e.getX(), e.getY());
+                                polygonCanvas.addPolygon(new Polygon(point, currentColor, currentMode));
+                            } else { // Otherwise add current point to the polygon and rerender
+                                point = new Point(e.getX(), e.getY());
+                                polygonCanvas.editLastPolygon(point);
+                                rerender();
+                            }
+                            break;
+                        case FILL:
+                            basicFiller.fill(new Point(e.getX(), e.getY()), currentColor);
                             rerender();
-                        }
+                            panel.repaint();
+                            break;
                     }
                 } else if (currentButton == MouseEvent.BUTTON3 || currentButton == MouseEvent.BUTTON2) {
                     int lineIndex = -1;
@@ -255,6 +269,7 @@ public class App {
                     point = null; // Reset point for purpose of creating polygons
                     ObjectType[] allObjects = ObjectType.values(); // Gets all objects
                     currentObject = allObjects[(currentObject.ordinal() + 1) % allObjects.length]; // Reassigns new object
+                    rerender();
                 }
             }
         };
@@ -262,11 +277,24 @@ public class App {
 
     private void rerender()  {
         raster.clear();
+
+        for (int y = 0; y < raster.getHeight(); y++) {
+            for (int x = 0; x < raster.getWidth(); x++) {
+                raster.setPixel(x, y, basicFiller.getColorCanvas()[x][y]);
+            }
+        }
+
         renderLines(canvas.getLines());
 
         for (Polygon polygon : polygonCanvas.getPolygons()) {
             rasterizer.rasterizeArray(polygon.getLines());
         }
+
+        Graphics2D g2d = (Graphics2D) raster.getGraphics();
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 14));
+        String modeText = "Mode: " + currentObject;
+        g2d.drawString(modeText, 10, 20);
 
         panel.repaint();
     }
