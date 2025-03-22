@@ -7,6 +7,7 @@ import java.awt.*;
 import java.util.Stack;
 
 public class BasicFiller implements Filler {
+    private static BasicFiller instance;
 
     private Raster raster;
 
@@ -14,9 +15,20 @@ public class BasicFiller implements Filler {
 
     private int[][] colorCanvas;
 
-    public BasicFiller(Raster raster) {
+    private BasicFiller(Raster raster) {
         this.raster = raster;
         this.colorCanvas = new int[raster.getWidth()][raster.getHeight()];
+    }
+
+    public static BasicFiller getInstance(Raster raster) {
+        if (instance == null) {
+            instance = new BasicFiller(raster);
+        }
+        return instance;
+    }
+
+    public static BasicFiller getInstance() {
+        return getInstance(null);
     }
 
     public int[][] getColorCanvas() { return colorCanvas; }

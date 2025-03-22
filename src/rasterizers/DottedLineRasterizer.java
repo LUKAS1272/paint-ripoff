@@ -8,13 +8,26 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class DottedLineRasterizer implements Rasterizer {
+    private static DottedLineRasterizer instance;
+
     private Raster raster;
 
     @Override
     public void setColor(Color color) {}
 
-    public DottedLineRasterizer(Raster raster) {
+    private DottedLineRasterizer(Raster raster) {
         this.raster = raster;
+    }
+
+    public static DottedLineRasterizer getInstance(Raster raster) {
+        if (instance == null) {
+            instance = new DottedLineRasterizer(raster);
+        }
+        return instance;
+    }
+
+    public static DottedLineRasterizer getInstance() {
+        return getInstance(null);
     }
 
     @Override

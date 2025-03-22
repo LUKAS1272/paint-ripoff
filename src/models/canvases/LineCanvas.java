@@ -5,10 +5,19 @@ import models.Line;
 import java.util.ArrayList;
 
 public class LineCanvas {
+    private static LineCanvas instance;
+
     private ArrayList<Line> lines;
 
-    public LineCanvas() {
+    private LineCanvas() {
         this.lines = new ArrayList<>();
+    }
+
+    public static LineCanvas getInstance() {
+        if (instance == null) {
+            instance = new LineCanvas();
+        }
+        return instance;
     }
 
     public void addLine(Line line) {

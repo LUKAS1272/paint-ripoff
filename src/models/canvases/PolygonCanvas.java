@@ -6,10 +6,17 @@ import models.Polygon;
 import java.util.ArrayList;
 
 public class PolygonCanvas {
+    private static PolygonCanvas instance;
+
     private ArrayList<Polygon> polygons;
 
-    public PolygonCanvas() {
-        this.polygons = new ArrayList<>();
+    private PolygonCanvas() { this.polygons = new ArrayList<>(); }
+
+    public static PolygonCanvas getInstance() {
+        if (instance == null) {
+            instance = new PolygonCanvas();
+        }
+        return instance;
     }
 
     public void addPolygon(Polygon polygon) {

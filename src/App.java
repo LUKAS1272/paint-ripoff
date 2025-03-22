@@ -1,6 +1,4 @@
-import enums.Alignment;
-import enums.LineType;
-import enums.ObjectType;
+import enums.*;
 import fillers.BasicFiller;
 import models.Line;
 import models.Polygon;
@@ -26,6 +24,8 @@ public class App {
     static public int width = 1920;
     static public int height = 1080;
 
+    private Renderer renderer;
+
     private final JPanel panel;
     private final Raster raster;
 
@@ -48,6 +48,8 @@ public class App {
     private PolygonCanvas polygonCanvas;
 
     // Enum modes
+    private EnumStore enumStore = EnumStore.getInstance();
+
     private LineType currentMode = LineType.DEFAULT;
     private ObjectType currentObject = ObjectType.LINE;
     private Alignment currentAlignment = Alignment.UNALIGNED;
@@ -68,7 +70,7 @@ public class App {
 
     public void start() {
         clear(0xaaaaaa);
-        rerender();
+        renderer.rerender();
     }
 
     public App(int width, int height) {
@@ -94,18 +96,19 @@ public class App {
         };
         panel.setPreferredSize(new Dimension(width, height));
 
+        renderer = Renderer.getInstance(raster, panel);
+        basicFiller = BasicFiller.getInstance(raster);
+
         frame.add(panel, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
 
-        rasterizer = new TrivialLineRasterizer(raster);
-        dottedRasterizer = new DottedLineRasterizer(raster);
-        dashedRasterizer = new DashedLineRasterizer(raster);
+        rasterizer = TrivialLineRasterizer.getInstance(raster);
+        dottedRasterizer = DottedLineRasterizer.getInstance(raster);
+        dashedRasterizer = DashedLineRasterizer.getInstance(raster);
 
-        basicFiller = new BasicFiller(raster);
-
-        canvas = new LineCanvas();
-        polygonCanvas = new PolygonCanvas();
+        canvas = LineCanvas.getInstance();
+        polygonCanvas = PolygonCanvas.getInstance();
 
         createAdapters();
         panel.addMouseListener(mouseAdapter);
@@ -133,7 +136,7 @@ public class App {
                 currentButton = e.getButton(); // Register currently pressed mouse button
 
                 if (currentButton == MouseEvent.BUTTON1) {
-                    switch (currentObject) {
+                    switch (enumStore.getObjectType()) {
                         case LINE:
                             point = new Point(e.getX(), e.getY());
                             break;
@@ -144,12 +147,12 @@ public class App {
                             } else { // Otherwise add current point to the polygon and rerender
                                 point = new Point(e.getX(), e.getY());
                                 polygonCanvas.editLastPolygon(point);
-                                rerender();
+                                renderer.rerender();
                             }
                             break;
                         case FILL:
                             basicFiller.fill(new Point(e.getX(), e.getY()), currentColor);
-                            rerender();
+                            renderer.rerender();
                             panel.repaint();
                             break;
                     }
@@ -187,24 +190,24 @@ public class App {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (point != null && currentObject == ObjectType.LINE) {
+                if (point != null && enumStore.getObjectType() == ObjectType.LINE) {
                     Point point2 = new Point(e.getX(), e.getY());
                     Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
                     canvas.addLine(line); // Add currently drawn line to the canvas
-                    rerender();
+                    renderer.rerender();
                 }
 
                 currentButton = MouseEvent.NOBUTTON; // Reset currently pressed mouse button
             }
 
             public void mouseDragged(MouseEvent e) {
-                if (point != null && currentObject == ObjectType.LINE) {
+                if (point != null && enumStore.getObjectType() == ObjectType.LINE) {
                     Point point2 = new Point(e.getX(), e.getY());
                     Line line = new Line(point, point2, currentColor, currentMode, currentAlignment);
 
-                    rerender();
-                    renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
+                    renderer.rerender();
+                    renderer.renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
                     panel.repaint(); // Update the canvas
                 }
             }
@@ -267,51 +270,10 @@ public class App {
             private void updateObject() {
                 if (pressedKeys.contains(KeyEvent.VK_E)) {
                     point = null; // Reset point for purpose of creating polygons
-                    ObjectType[] allObjects = ObjectType.values(); // Gets all objects
-                    currentObject = allObjects[(currentObject.ordinal() + 1) % allObjects.length]; // Reassigns new object
-                    rerender();
+                    enumStore.moveEnum(Enums.ActionType);
+                    renderer.rerender();
                 }
             }
         };
-    }
-
-    private void rerender()  {
-        raster.clear();
-
-        for (int y = 0; y < raster.getHeight(); y++) {
-            for (int x = 0; x < raster.getWidth(); x++) {
-                raster.setPixel(x, y, basicFiller.getColorCanvas()[x][y]);
-            }
-        }
-
-        renderLines(canvas.getLines());
-
-        for (Polygon polygon : polygonCanvas.getPolygons()) {
-            rasterizer.rasterizeArray(polygon.getLines());
-        }
-
-        Graphics2D g2d = (Graphics2D) raster.getGraphics();
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Arial", Font.BOLD, 14));
-        String modeText = "Mode: " + currentObject;
-        g2d.drawString(modeText, 10, 20);
-
-        panel.repaint();
-    }
-
-    private void renderLines(ArrayList<Line> lines) {
-        for (Line line : lines) {
-            switch (line.getLineType()) {
-                case LineType.DEFAULT:
-                    rasterizer.rasterize(line);
-                    break;
-                case LineType.DOTTED:
-                    dottedRasterizer.rasterize(line);
-                    break;
-                case LineType.DASHED:
-                    dashedRasterizer.rasterize(line);
-                    break;
-            }
-        }
     }
 }

@@ -8,13 +8,26 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class DashedLineRasterizer implements Rasterizer {
+    private static DashedLineRasterizer instance;
+
     private Raster raster;
 
     @Override
     public void setColor(Color color) {}
 
-    public DashedLineRasterizer(Raster raster) {
+    private DashedLineRasterizer(Raster raster) {
         this.raster = raster;
+    }
+
+    public static DashedLineRasterizer getInstance(Raster raster) {
+        if (instance == null) {
+            instance = new DashedLineRasterizer(raster);
+        }
+        return instance;
+    }
+
+    public static DashedLineRasterizer getInstance() {
+        return getInstance(null);
     }
 
     @Override

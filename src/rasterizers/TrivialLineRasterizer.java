@@ -8,13 +8,26 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class TrivialLineRasterizer implements Rasterizer {
+    private static TrivialLineRasterizer instance;
+
     private Raster raster;
 
     @Override
     public void setColor(Color color) {}
 
-    public TrivialLineRasterizer(Raster raster) {
+    private TrivialLineRasterizer(Raster raster) {
         this.raster = raster;
+    }
+
+    public static TrivialLineRasterizer getInstance(Raster raster) {
+        if (instance == null) {
+            instance = new TrivialLineRasterizer(raster);
+        }
+        return instance;
+    }
+
+    public static TrivialLineRasterizer getInstance() {
+        return getInstance(null);
     }
 
     @Override
