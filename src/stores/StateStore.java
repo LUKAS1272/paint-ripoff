@@ -18,5 +18,5 @@ public class StateStore {
 
     public Color lineColor = Color.white;
     public Color fillColor = Color.green;
-    public int thickness = 1;
+    public int thickness = 10;
 }

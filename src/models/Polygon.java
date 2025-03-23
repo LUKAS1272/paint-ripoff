@@ -9,12 +9,14 @@ import java.util.ArrayList;
 public class Polygon {
     private ArrayList<Point> points = new ArrayList<>();
     private Color color;
+    private int thickness;
     private LineType lineType;
 
-    public Polygon(Point firstPoint, Color color, LineType lineType) {
+    public Polygon(Point firstPoint, Color color, LineType lineType, int thickness) {
         addPoint(firstPoint);
         this.color = color;
         this.lineType = lineType;
+        this.thickness = thickness;
     }
 
     public void addPoint(Point point) { this.points.add(point); }
@@ -35,7 +37,7 @@ public class Polygon {
             firstPoint = points.get(i - 1);
             secondPoint = points.get(i % points.size());
 
-            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned);
+            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned, thickness);
             lines.add(polygonLine);
         }
 

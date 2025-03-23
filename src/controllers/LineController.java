@@ -40,7 +40,7 @@ public class LineController {
     public void createLine(int x, int y) {
         if (point != null) {
             Point point2 = new Point(x, y);
-            Line line = new Line(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, EnumStore.getInstance().alignment);
+            Line line = new Line(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().thickness);
             clearPoint();
 
             LineCanvas.getInstance().addLine(line); // Add currently drawn line to the canvas
@@ -89,7 +89,7 @@ public class LineController {
     public void MoveLineDrag(int x, int y) {
         if (point != null) {
             Point point2 = new Point(x, y);
-            Line line = new Line(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, EnumStore.getInstance().alignment);
+            Line line = new Line(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().thickness);
 
             Renderer.getInstance().rerender();
             Renderer.getInstance().renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line

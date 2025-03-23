@@ -37,34 +37,46 @@ public class TrivialLineRasterizer implements Rasterizer {
         int yDiff = y2 - y1;
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-            float k = (float) yDiff / xDiff;
-            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
-            float q = y1 - (k * x1);
+            int multiplier = 1;
+            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
+                float k = (float) yDiff / xDiff;
+                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
+                float q = y1 - (k * x1);
 
-            int greaterX = Math.max(x1, x2);
-            int lesserX = Math.min(x1, x2);
+                int greaterX = Math.max(x1, x2);
+                int lesserX = Math.min(x1, x2);
 
-            for (int x = lesserX; x <= greaterX; x++) {
-                int y = Math.round(k * x + q);
+                for (int x = lesserX; x <= greaterX; x++) {
+                    int y = Math.round(k * x + q);
 
-                if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                    raster.setPixel(x, y, line.getColor().getRGB());
+                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
+                        raster.setPixel(x, y, line.getColor().getRGB());
+                    }
                 }
+
+                y1 += layerNumber * multiplier;
+                multiplier *= -1;
             }
         } else {
-            float k = (float) xDiff / yDiff;
-            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
-            float q = x1 - (k * y1);
+            int multiplier = 1;
+            for (int layerNumber = 1; layerNumber <= line.getThickness(); layerNumber++) {
+                float k = (float) xDiff / yDiff;
+                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
+                float q = x1 - (k * y1);
 
-            int greaterY = Math.max(y1, y2);
-            int lesserY = Math.min(y1, y2);
+                int greaterY = Math.max(y1, y2);
+                int lesserY = Math.min(y1, y2);
 
-            for (int y = lesserY; y <= greaterY; y++) {
-                int x = Math.round(k * y + q);
+                for (int y = lesserY; y <= greaterY; y++) {
+                    int x = Math.round(k * y + q);
 
-                if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                    raster.setPixel(x, y, line.getColor().getRGB());
+                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
+                        raster.setPixel(x, y, line.getColor().getRGB());
+                    }
                 }
+
+                x1 += layerNumber * multiplier;
+                multiplier *= -1;
             }
         }
     }

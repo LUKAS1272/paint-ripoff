@@ -30,9 +30,10 @@ public class PolygonController {
     }
 
     public void createPolygon(int x, int y) {
+        System.out.println("Creating Polygon");
         if (point == null) { // If there is no point created, create one and register polygon
             point = new Point(x, y);
-            PolygonCanvas.getInstance().addPolygon(new Polygon(point, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType));
+            PolygonCanvas.getInstance().addPolygon(new Polygon(point, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, StateStore.getInstance().thickness));
         } else { // Otherwise add current point to the polygon and rerender
             point = new Point(x, y);
             PolygonCanvas.getInstance().editLastPolygon(point);
