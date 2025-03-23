@@ -1,3 +1,5 @@
+package utilities;
+
 import enums.EnumStore;
 import enums.LineType;
 import fillers.BasicFiller;
@@ -17,12 +19,12 @@ import java.util.ArrayList;
 public class Renderer {
     private static Renderer instance = null;
 
-    private Raster raster;
-    private JPanel panel;
+//    private Raster raster;
+//    private JPanel panel;
 
     private Renderer(Raster raster, JPanel panel) {
-        if (raster != null) { this.raster = raster; }
-        if (panel != null) { this.panel = panel; }
+//        if (raster != null) { this.raster = raster; }
+//        if (panel != null) { this.panel = panel; }
     }
 
     public static Renderer getInstance(Raster raster, JPanel panel) {
@@ -37,14 +39,14 @@ public class Renderer {
     }
 
     public void rerender()  {
-        raster.clear();
+        Frame.getInstance().getRaster().clear();
 
-        for (int y = 0; y < raster.getHeight(); y++) {
-            for (int x = 0; x < raster.getWidth(); x++) {
+        for (int y = 0; y < Frame.getInstance().getRaster().getHeight(); y++) {
+            for (int x = 0; x < Frame.getInstance().getRaster().getWidth(); x++) {
                 int color = BasicFiller.getInstance().getColorCanvas()[x][y];
 
                 if (color != 0) {
-                    raster.setPixel(x, y, color);
+                    Frame.getInstance().getRaster().setPixel(x, y, color);
                 }
             }
         }
@@ -55,13 +57,20 @@ public class Renderer {
             TrivialLineRasterizer.getInstance().rasterizeArray(polygon.getLines());
         }
 
-        Graphics2D g2d = (Graphics2D) raster.getGraphics();
+        Graphics2D g2d = (Graphics2D) Frame.getInstance().getRaster().getGraphics();
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 14));
         String modeText = "Mode: " + EnumStore.getInstance().getObjectType();
         g2d.drawString(modeText, 10, 20);
 
-        panel.repaint();
+        Frame.getInstance().getPanel().repaint();
+    }
+
+    public void clear() {
+        LineCanvas.getInstance().clearLines();
+        PolygonCanvas.getInstance().clearPolygons();
+        BasicFiller.getInstance().clearColorCanvas();
+        rerender();
     }
 
     public void renderLines(ArrayList<Line> lines) {

@@ -33,6 +33,8 @@ public class BasicFiller implements Filler {
 
     public int[][] getColorCanvas() { return colorCanvas; }
 
+    public void clearColorCanvas() {  colorCanvas = new int[raster.getWidth()][raster.getHeight()]; }
+
     @Override
     public void fill(Point click, Color fillColor) {
         int baseColor = raster.getPixel(click.getX(), click.getY());

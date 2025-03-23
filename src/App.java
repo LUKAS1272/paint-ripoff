@@ -8,6 +8,8 @@ import models.canvases.PolygonCanvas;
 import rasterizers.*;
 import rasters.Raster;
 import rasters.RasterBufferedImage;
+import utilities.Frame;
+import utilities.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +26,7 @@ public class App {
     static public int width = 1920;
     static public int height = 1080;
 
-    private Renderer renderer;
+    private utilities.Renderer renderer;
 
     private final JPanel panel;
     private final Raster raster;
@@ -34,11 +36,6 @@ public class App {
 
     private Color currentColor = Color.white;
     private Point point = null;
-
-    // Rasterizers
-    private Rasterizer rasterizer;
-    private Rasterizer dottedRasterizer;
-    private Rasterizer dashedRasterizer;
 
     // Fillers
     private BasicFiller basicFiller;
@@ -51,61 +48,25 @@ public class App {
     private EnumStore enumStore = EnumStore.getInstance();
 
     private LineType currentMode = LineType.DEFAULT;
-    private ObjectType currentObject = ObjectType.LINE;
     private Alignment currentAlignment = Alignment.UNALIGNED;
     private int currentButton = MouseEvent.NOBUTTON;
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new App(width, height).start());
+        new App();
     }
 
-    public void clear(int color) {
-        raster.setClearColor(color);
-        raster.clear();
-    }
+    public App() {
+        Frame.getInstance();
 
-    public void present(Graphics graphics) {
-        raster.repaint(graphics);
-    }
-
-    public void start() {
-        clear(0xaaaaaa);
-        renderer.rerender();
-    }
-
-    public App(int width, int height) {
-        JFrame frame = new JFrame();
-
-        frame.setLayout(new BorderLayout());
-
-        frame.setTitle("UHK FIM PGRF : " + this.getClass().getName());
-        frame.setResizable(true);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        raster = new RasterBufferedImage(width, height);
-
-        panel = new JPanel() {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                present(g);
-            }
-        };
-        panel.setPreferredSize(new Dimension(width, height));
+        raster = Frame.getInstance().getRaster();
+        panel = Frame.getInstance().getPanel();
 
         renderer = Renderer.getInstance(raster, panel);
         basicFiller = BasicFiller.getInstance(raster);
 
-        frame.add(panel, BorderLayout.CENTER);
-        frame.pack();
-        frame.setVisible(true);
-
-        rasterizer = TrivialLineRasterizer.getInstance(raster);
-        dottedRasterizer = DottedLineRasterizer.getInstance(raster);
-        dashedRasterizer = DashedLineRasterizer.getInstance(raster);
+        TrivialLineRasterizer.getInstance(raster);
+        DottedLineRasterizer.getInstance(raster);
+        DashedLineRasterizer.getInstance(raster);
 
         canvas = LineCanvas.getInstance();
         polygonCanvas = PolygonCanvas.getInstance();
@@ -115,8 +76,7 @@ public class App {
         panel.addMouseMotionListener(mouseAdapter);
         panel.addKeyListener(keyAdapter);
 
-        panel.requestFocus();
-        panel.requestFocusInWindow();
+        Renderer.getInstance().rerender();
     }
 
     private float getDistance(Point p, int x, int y) {
@@ -219,10 +179,7 @@ public class App {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-                    raster.clear();
-                    canvas.clearLines();
-                    polygonCanvas.clearPolygons();
-                    panel.repaint();
+                    renderer.clear();
                 }
 
                 pressedKeys.add(e.getKeyCode());
