@@ -8,7 +8,7 @@ import java.awt.*;
 import java.io.Serial;
 
 public class Frame {
-    private final int width = 1920;
+    private final int width = 1920 / 2;
     private final int height = 1080;
     private final int backgrounColor = 0xaaaaaa;
 

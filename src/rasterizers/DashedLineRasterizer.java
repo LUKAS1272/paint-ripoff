@@ -3,6 +3,7 @@ package rasterizers;
 import enums.Alignment;
 import models.Line;
 import rasters.Raster;
+import utilities.Frame;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,19 +16,15 @@ public class DashedLineRasterizer implements Rasterizer {
     @Override
     public void setColor(Color color) {}
 
-    private DashedLineRasterizer(Raster raster) {
-        this.raster = raster;
-    }
-
-    public static DashedLineRasterizer getInstance(Raster raster) {
-        if (instance == null) {
-            instance = new DashedLineRasterizer(raster);
-        }
-        return instance;
+    private DashedLineRasterizer() {
+        this.raster = Frame.getInstance().getRaster();
     }
 
     public static DashedLineRasterizer getInstance() {
-        return getInstance(null);
+        if (instance == null) {
+            instance = new DashedLineRasterizer();
+        }
+        return instance;
     }
 
     @Override
@@ -47,7 +44,7 @@ public class DashedLineRasterizer implements Rasterizer {
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
             float k = (float) yDiff / xDiff;
-            if (line.getAlignment() == Alignment.ALIGNED) { k = Math.round(k); }
+            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
             float q = y1 - (k * x1);
 
             int greaterX = Math.max(x1, x2);
@@ -68,7 +65,7 @@ public class DashedLineRasterizer implements Rasterizer {
             }
         } else {
             float k = (float) xDiff / yDiff;
-            if (line.getAlignment() == Alignment.ALIGNED) { k = Math.round(k); }
+            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
             float q = x1 - (k * y1);
 
             int greaterY = Math.max(y1, y2);

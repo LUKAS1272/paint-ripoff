@@ -1,11 +1,16 @@
-package enums;
+package stores;
+
+import controllers.LineController;
+import controllers.PolygonController;
+import enums.*;
+import enums.storeEnums.Enum;
 
 public class EnumStore {
     private static EnumStore instance;
 
-    private static Alignment alignment = Alignment.values()[0];
-    private static LineType lineType = LineType.values()[0];
-    private static ObjectType objectType = ObjectType.values()[0];
+    public Alignment alignment = Alignment.values()[0];
+    public LineType lineType = LineType.values()[0];
+    public ActionType actionType = ActionType.values()[0];
 
     private EnumStore() {}
 
@@ -16,15 +21,7 @@ public class EnumStore {
         return instance;
     }
 
-    // ------------------------------------- \\
-    // Getters                               \\
-    // ------------------------------------- \\
-
-    public Alignment getAlignment() { return alignment; }
-    public LineType getLineType() { return lineType; }
-    public ObjectType getObjectType() { return objectType; }
-
-    public void moveEnum(Enums enumType) {
+    public void moveEnum(Enum enumType) {
         switch (enumType) {
             case Alignment:
                 Alignment[] allAlignments = Alignment.values(); // Gets all enum object
@@ -35,8 +32,10 @@ public class EnumStore {
                 lineType = allLineTypes[(lineType.ordinal() + 1) % allLineTypes.length]; // Assigns next enum object
                 break;
             case ActionType:
-                ObjectType[] allObjectTypes = ObjectType.values(); // Gets all enum object
-                objectType = allObjectTypes[(objectType.ordinal() + 1) % allObjectTypes.length]; // Assigns next enum object
+                ActionType[] allActionTypes = ActionType.values(); // Gets all enum object
+                actionType = allActionTypes[(actionType.ordinal() + 1) % allActionTypes.length]; // Assigns next enum object
+
+                PolygonController.getInstance().clearPoint();
                 break;
         }
     }

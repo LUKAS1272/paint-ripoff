@@ -2,6 +2,8 @@ package fillers;
 
 import models.Point;
 import rasters.Raster;
+import utilities.Frame;
+import utilities.Renderer;
 
 import java.awt.*;
 import java.util.Stack;
@@ -15,20 +17,16 @@ public class BasicFiller implements Filler {
 
     private int[][] colorCanvas;
 
-    private BasicFiller(Raster raster) {
-        this.raster = raster;
+    private BasicFiller() {
+        this.raster = Frame.getInstance().getRaster();
         this.colorCanvas = new int[raster.getWidth()][raster.getHeight()];
     }
 
-    public static BasicFiller getInstance(Raster raster) {
+    public static BasicFiller getInstance() {
         if (instance == null) {
-            instance = new BasicFiller(raster);
+            instance = new BasicFiller();
         }
         return instance;
-    }
-
-    public static BasicFiller getInstance() {
-        return getInstance(null);
     }
 
     public int[][] getColorCanvas() { return colorCanvas; }
@@ -39,7 +37,6 @@ public class BasicFiller implements Filler {
     public void fill(Point click, Color fillColor) {
         int baseColor = raster.getPixel(click.getX(), click.getY());
         int fillColorInt = fillColor.getRGB();
-        fillColorInt = Color.blue.getRGB();
 
         if (baseColor == fillColorInt) { return; }
 
@@ -48,6 +45,8 @@ public class BasicFiller implements Filler {
         while (!nextSeeds.isEmpty()) {
             processSeed(baseColor, fillColorInt);
         }
+
+        Renderer.getInstance().rerender();
     }
 
     private void processSeed(int baseColor, int fillColor) {

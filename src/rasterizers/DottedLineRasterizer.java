@@ -3,6 +3,7 @@ package rasterizers;
 import enums.Alignment;
 import models.Line;
 import rasters.Raster;
+import utilities.Frame;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,19 +16,13 @@ public class DottedLineRasterizer implements Rasterizer {
     @Override
     public void setColor(Color color) {}
 
-    private DottedLineRasterizer(Raster raster) {
-        this.raster = raster;
-    }
-
-    public static DottedLineRasterizer getInstance(Raster raster) {
-        if (instance == null) {
-            instance = new DottedLineRasterizer(raster);
-        }
-        return instance;
-    }
+    private DottedLineRasterizer() { this.raster = Frame.getInstance().getRaster();}
 
     public static DottedLineRasterizer getInstance() {
-        return getInstance(null);
+        if (instance == null) {
+            instance = new DottedLineRasterizer();
+        }
+        return instance;
     }
 
     @Override
@@ -44,7 +39,7 @@ public class DottedLineRasterizer implements Rasterizer {
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
             float k = (float) yDiff / xDiff;
-            if (line.getAlignment() == Alignment.ALIGNED) { k = Math.round(k); }
+            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
             float q = y1 - (k * x1);
 
             int greaterX = Math.max(x1, x2);
@@ -61,7 +56,7 @@ public class DottedLineRasterizer implements Rasterizer {
             }
         } else {
             float k = (float) xDiff / yDiff;
-            if (line.getAlignment() == Alignment.ALIGNED) { k = Math.round(k); }
+            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
             float q = x1 - (k * y1);
 
             int greaterY = Math.max(y1, y2);

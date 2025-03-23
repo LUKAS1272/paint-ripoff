@@ -1,6 +1,6 @@
 package utilities;
 
-import enums.EnumStore;
+import stores.EnumStore;
 import enums.LineType;
 import fillers.BasicFiller;
 import models.Line;
@@ -10,32 +10,20 @@ import models.canvases.PolygonCanvas;
 import rasterizers.DashedLineRasterizer;
 import rasterizers.DottedLineRasterizer;
 import rasterizers.TrivialLineRasterizer;
-import rasters.Raster;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Renderer {
     private static Renderer instance = null;
 
-//    private Raster raster;
-//    private JPanel panel;
-
-    private Renderer(Raster raster, JPanel panel) {
-//        if (raster != null) { this.raster = raster; }
-//        if (panel != null) { this.panel = panel; }
-    }
-
-    public static Renderer getInstance(Raster raster, JPanel panel) {
-        if (instance == null) {
-            instance = new Renderer(raster, panel);
-        }
-        return instance;
-    }
+    private Renderer() {}
 
     public static Renderer getInstance() {
-        return getInstance(null, null);
+        if (instance == null) {
+            instance = new Renderer();
+        }
+        return instance;
     }
 
     public void rerender()  {
@@ -60,13 +48,13 @@ public class Renderer {
         Graphics2D g2d = (Graphics2D) Frame.getInstance().getRaster().getGraphics();
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 14));
-        String modeText = "Mode: " + EnumStore.getInstance().getObjectType();
+        String modeText = "Mode: " + EnumStore.getInstance().actionType;
         g2d.drawString(modeText, 10, 20);
 
         Frame.getInstance().getPanel().repaint();
     }
 
-    public void clear() {
+    public void clear() { // Clears the canvas and rerenders frame
         LineCanvas.getInstance().clearLines();
         PolygonCanvas.getInstance().clearPolygons();
         BasicFiller.getInstance().clearColorCanvas();
@@ -76,13 +64,13 @@ public class Renderer {
     public void renderLines(ArrayList<Line> lines) {
         for (Line line : lines) {
             switch (line.getLineType()) {
-                case LineType.DEFAULT:
+                case LineType.Default:
                     TrivialLineRasterizer.getInstance().rasterize(line);
                     break;
-                case LineType.DOTTED:
+                case LineType.Dotted:
                     DottedLineRasterizer.getInstance().rasterize(line);
                     break;
-                case LineType.DASHED:
+                case LineType.Dashed:
                     DashedLineRasterizer.getInstance().rasterize(line);
                     break;
             }

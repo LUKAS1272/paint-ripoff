@@ -1,6 +1,6 @@
-package enums;
+package enums.storeEnums;
 
-public enum Enums {
+public enum Enum {
     Alignment,
     LineType,
     ActionType,

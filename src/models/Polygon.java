@@ -35,7 +35,7 @@ public class Polygon {
             firstPoint = points.get(i - 1);
             secondPoint = points.get(i % points.size());
 
-            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.UNALIGNED);
+            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned);
             lines.add(polygonLine);
         }
 
