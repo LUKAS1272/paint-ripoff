@@ -32,44 +32,71 @@ public class DottedLineRasterizer implements Rasterizer {
         int x2 = line.getPoint2().getX();
         int y2 = line.getPoint2().getY();
 
-        int spaceLength = 10;
+        int spaceLength = 1;
+        int untilSpace;
 
         int xDiff = x2 - x1;
         int yDiff = y2 - y1;
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-            float k = (float) yDiff / xDiff;
-            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
-            float q = y1 - (k * x1);
+            int multiplier = 1;
+            for (int layerNumber = 1; layerNumber <= line.getThickness(); layerNumber++) {
+                untilSpace = spaceLength * line.getThickness();
 
-            int greaterX = Math.max(x1, x2);
-            int lesserX = Math.min(x1, x2);
+                float k = (float) yDiff / xDiff;
+                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
+                float q = y1 - (k * x1);
 
-            for (int x = lesserX; x <= greaterX; x++) {
-                int y = Math.round(k * x + q);
+                int greaterX = Math.max(x1, x2);
+                int lesserX = Math.min(x1, x2);
 
-                if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                    raster.setPixel(x, y, line.getColor().getRGB());
+                for (int x = lesserX; x <= greaterX; x++) {
+                    int y = Math.round(k * x + q);
+
+                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
+                        raster.setPixel(x, y, line.getColor().getRGB());
+                    }
+
+                    untilSpace--;
+                    if (untilSpace == 0) {
+                        x += spaceLength * line.getThickness();
+                        untilSpace = spaceLength * line.getThickness();
+                    }
                 }
 
-                x += spaceLength;
+                y1 += layerNumber * multiplier;
+                multiplier *= -1;
             }
         } else {
-            float k = (float) xDiff / yDiff;
-            if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
-            float q = x1 - (k * y1);
+            int multiplier = 1;
+            for (int layerNumber = 1; layerNumber <= line.getThickness(); layerNumber++) {
+                untilSpace = spaceLength * line.getThickness();
 
-            int greaterY = Math.max(y1, y2);
-            int lesserY = Math.min(y1, y2);
+                float k = (float) xDiff / yDiff;
+                if (line.getAlignment() == Alignment.Aligned) {
+                    k = Math.round(k);
+                }
+                float q = x1 - (k * y1);
 
-            for (int y = lesserY; y <= greaterY; y++) {
-                int x = Math.round(k * y + q);
+                int greaterY = Math.max(y1, y2);
+                int lesserY = Math.min(y1, y2);
 
-                if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                    raster.setPixel(x, y, line.getColor().getRGB());
+                for (int y = lesserY; y <= greaterY; y++) {
+                    int x = Math.round(k * y + q);
+
+                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
+                        raster.setPixel(x, y, line.getColor().getRGB());
+                    }
+
+                    untilSpace--;
+                    if (untilSpace == 0) {
+                        y += spaceLength * line.getThickness();
+                        untilSpace = spaceLength * line.getThickness();
+                    }
                 }
 
-                y += spaceLength;
+                x1 += layerNumber * multiplier;
+                multiplier *= -1;
             }
         }
     }
