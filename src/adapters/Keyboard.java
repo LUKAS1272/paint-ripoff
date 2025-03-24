@@ -4,6 +4,7 @@ import enums.Alignment;
 import enums.LineType;
 import enums.storeEnums.Enum;
 import stores.EnumStore;
+import stores.StateStore;
 import utilities.Frame;
 import utilities.Renderer;
 
@@ -39,6 +40,15 @@ public class Keyboard {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
                     Renderer.getInstance().clear();
+                }
+
+                switch (e.getKeyChar()) {
+                    case '+':
+                        StateStore.getInstance().increaseThickness();
+                        break;
+                    case '-':
+                        StateStore.getInstance().decreaseThickness();
+                        break;
                 }
 
                 pressedKeys.add(e.getKeyCode());

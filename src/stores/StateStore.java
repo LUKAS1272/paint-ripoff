@@ -15,8 +15,30 @@ public class StateStore {
     private StateStore() {}
 
     // --------------------------------------
+    private int minThickness = 2;
+    private int maxThickness = 10;
+    // --------------------------------------
 
     public Color lineColor = Color.white;
     public Color fillColor = Color.green;
-    public int thickness = 10;
+
+    private int thickness = minThickness;
+
+    public int getThickness() { return thickness; }
+
+    public void increaseThickness() {
+        thickness++;
+
+        if (thickness > maxThickness) {
+            thickness = maxThickness;
+        }
+    }
+
+    public void decreaseThickness() {
+        thickness--;
+
+        if (thickness < minThickness) {
+            thickness = minThickness;
+        }
+    }
 }

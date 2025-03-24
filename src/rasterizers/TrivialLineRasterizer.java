@@ -37,7 +37,6 @@ public class TrivialLineRasterizer implements Rasterizer {
         int yDiff = y2 - y1;
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-            int multiplier = 1;
             for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
                 float k = (float) yDiff / xDiff;
                 if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
@@ -49,17 +48,16 @@ public class TrivialLineRasterizer implements Rasterizer {
                 for (int x = lesserX; x <= greaterX; x++) {
                     int y = Math.round(k * x + q);
 
+                    if (layerNumber % 2 == 0) { y += layerNumber / 2; }
+                    else { y -= (layerNumber + 1) / 2; }
+
                     if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
                         raster.setPixel(x, y, line.getColor().getRGB());
                     }
                 }
-
-                y1 += layerNumber * multiplier;
-                multiplier *= -1;
             }
         } else {
-            int multiplier = 1;
-            for (int layerNumber = 1; layerNumber <= line.getThickness(); layerNumber++) {
+            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
                 float k = (float) xDiff / yDiff;
                 if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
                 float q = x1 - (k * y1);
@@ -70,13 +68,13 @@ public class TrivialLineRasterizer implements Rasterizer {
                 for (int y = lesserY; y <= greaterY; y++) {
                     int x = Math.round(k * y + q);
 
+                    if (layerNumber % 2 == 0) { x += layerNumber / 2; }
+                    else { x -= (layerNumber + 1) / 2; }
+
                     if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
                         raster.setPixel(x, y, line.getColor().getRGB());
                     }
                 }
-
-                x1 += layerNumber * multiplier;
-                multiplier *= -1;
             }
         }
     }

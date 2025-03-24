@@ -34,8 +34,8 @@ public class DashedLineRasterizer implements Rasterizer {
         int x2 = line.getPoint2().getX();
         int y2 = line.getPoint2().getY();
 
-        int dashLength = 10;
-        int spaceLength = 5;
+        int dashLength = 6;
+        int spaceLength = 3;
 
         int untilSpace;
 
@@ -43,8 +43,7 @@ public class DashedLineRasterizer implements Rasterizer {
         int yDiff = y2 - y1;
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-            int multiplier = 1;
-            for (int layerNumber = 1; layerNumber <= line.getThickness(); layerNumber++) {
+            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
                 untilSpace = dashLength * line.getThickness();
 
                 float k = (float) yDiff / xDiff;
@@ -59,6 +58,9 @@ public class DashedLineRasterizer implements Rasterizer {
                 for (int x = lesserX; x <= greaterX; x++) {
                     int y = Math.round(k * x + q);
 
+                    if (layerNumber % 2 == 0) { y += layerNumber / 2; }
+                    else { y -= (layerNumber + 1) / 2; }
+
                     if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
                         raster.setPixel(x, y, line.getColor().getRGB());
                     }
@@ -69,13 +71,9 @@ public class DashedLineRasterizer implements Rasterizer {
                         untilSpace = dashLength * line.getThickness();
                     }
                 }
-
-                y1 += layerNumber * multiplier;
-                multiplier *= -1;
             }
         } else {
-            int multiplier = 1;
-            for (int layerNumber = 1; layerNumber <= line.getThickness(); layerNumber++) {
+            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
                 untilSpace = dashLength * line.getThickness();
 
                 float k = (float) xDiff / yDiff;
@@ -90,6 +88,9 @@ public class DashedLineRasterizer implements Rasterizer {
                 for (int y = lesserY; y <= greaterY; y++) {
                     int x = Math.round(k * y + q);
 
+                    if (layerNumber % 2 == 0) { x += layerNumber / 2; }
+                    else { x -= (layerNumber + 1) / 2; }
+
                     if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
                         raster.setPixel(x, y, line.getColor().getRGB());
                     }
@@ -100,9 +101,6 @@ public class DashedLineRasterizer implements Rasterizer {
                         untilSpace = dashLength * line.getThickness();
                     }
                 }
-
-                x1 += layerNumber * multiplier;
-                multiplier *= -1;
             }
         }
     }
