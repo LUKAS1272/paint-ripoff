@@ -42,6 +42,8 @@ public class DashedLineRasterizer implements Rasterizer {
         int xDiff = x2 - x1;
         int yDiff = y2 - y1;
 
+        if (xDiff == 0 && yDiff == 0) { return; }
+
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
             for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
                 untilSpace = dashLength * line.getThickness();

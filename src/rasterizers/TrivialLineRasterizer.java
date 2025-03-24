@@ -32,9 +32,10 @@ public class TrivialLineRasterizer implements Rasterizer {
         int x2 = line.getPoint2().getX();
         int y2 = line.getPoint2().getY();
 
-
         int xDiff = x2 - x1;
         int yDiff = y2 - y1;
+
+        if (xDiff == 0 && yDiff == 0) { return; }
 
         if (Math.abs(xDiff) >= Math.abs(yDiff)) {
             for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
