@@ -2,6 +2,8 @@ package models;
 
 import enums.Alignment;
 import enums.LineType;
+import stores.EnumStore;
+import stores.StateStore;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,33 +12,51 @@ public class Rectangle {
     private ArrayList<Point> points = new ArrayList<>();
     private Color color;
     private int thickness;
-    private LineType lineType;
+    private Alignment alignment;
 
-    public Rectangle(Point firstPoint, Point secondPoint, Color color, LineType lineType, int thickness) {
+    public Rectangle(Point firstPoint, Point secondPoint, Color color, Alignment alignment, int thickness) {
         addPoint(firstPoint);
         createFromTwoPoints(secondPoint);
         this.color = color;
-        this.lineType = lineType;
+        this.alignment = alignment;
         this.thickness = thickness;
     }
 
     public void createFromTwoPoints(Point secondPoint) {
+        thickness = StateStore.getInstance().getThickness(); // Updates the thickness of the object
+        alignment = EnumStore.getInstance().alignment; // Updates the alignment (rectangle / squalre)
+
         Point firstPoint = points.getFirst();
         points.clear();
+        addPoint(firstPoint); // First point is the same everywhere
 
-        addPoint(firstPoint);
-        addPoint(new Point(firstPoint.getX(), secondPoint.getY()));
-        addPoint(secondPoint);
-        addPoint(new Point(secondPoint.getX(), firstPoint.getY()));
+        if (alignment == Alignment.Aligned) { // Square
+            int yDiff = secondPoint.getY() - firstPoint.getY();
+            int xDiff = secondPoint.getX() - firstPoint.getX();
+
+            int xSign = xDiff == 0 ? 0 : xDiff / Math.abs(xDiff);
+            int ySign = yDiff == 0 ? 0 : yDiff / Math.abs(yDiff);
+            int sign = xSign * ySign;
+
+            if (Math.abs(yDiff) > Math.abs(xDiff)) {
+                addPoint(new Point(firstPoint.getX(), firstPoint.getY() + yDiff));
+                addPoint(new Point(firstPoint.getX() + yDiff * sign, firstPoint.getY() + yDiff));
+                addPoint(new Point(firstPoint.getX() + yDiff * sign, firstPoint.getY()));
+            } else {
+                addPoint(new Point(firstPoint.getX(), firstPoint.getY() + xDiff * sign));
+                addPoint(new Point(firstPoint.getX() + xDiff, firstPoint.getY() + xDiff * sign));
+                addPoint(new Point(firstPoint.getX() + xDiff, firstPoint.getY()));
+            }
+        } else { // Rectangle
+            addPoint(new Point(firstPoint.getX(), secondPoint.getY()));
+            addPoint(secondPoint);
+            addPoint(new Point(secondPoint.getX(), firstPoint.getY()));
+        }
     }
 
     public void addPoint(Point point) { this.points.add(point); }
 
     public Color getColor() { return color; }
-
-    public LineType getLineType() { return lineType; }
-
-    public ArrayList<Point> getPoints() { return points; }
 
     public ArrayList<Line> getLines() {
         ArrayList<Line> lines = new ArrayList<>();
@@ -48,7 +68,7 @@ public class Rectangle {
             firstPoint = points.get(i - 1);
             secondPoint = points.get(i % points.size());
 
-            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned, thickness);
+            Line polygonLine = new Line(firstPoint, secondPoint, color, LineType.Default, Alignment.Unaligned, thickness);
             lines.add(polygonLine);
         }
 
