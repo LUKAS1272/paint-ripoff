@@ -36,7 +36,7 @@ public class RectangleController {
     public void createRectangle(int x, int y) {
         if (point != null) {
             Point point2 = new Point(x, y);
-            Rectangle rectangle = new Rectangle(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().alignment, StateStore.getInstance().getThickness());
+            Rectangle rectangle = new Rectangle(point, point2);
             clearPoint();
 
             RectangleCanvas.getInstance().addRectangle(rectangle); // Add currently drawn line to the canvas

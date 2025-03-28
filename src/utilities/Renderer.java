@@ -1,7 +1,10 @@
 package utilities;
 
+import models.Circle;
 import models.Rectangle;
+import models.canvases.CircleCanvas;
 import models.canvases.RectangleCanvas;
+import rasterizers.CircleRasterizer;
 import stores.EnumStore;
 import enums.LineType;
 import fillers.BasicFiller;
@@ -51,6 +54,10 @@ public class Renderer {
             TrivialLineRasterizer.getInstance().rasterizeArray(rectangle.getLines());
         }
 
+        for (Circle circle : CircleCanvas.getInstance().getCircles()) {
+            CircleRasterizer.getInstance().rasterize(circle);
+        }
+
         Graphics2D g2d = (Graphics2D) Frame.getInstance().getRaster().getGraphics();
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 14));
@@ -64,6 +71,7 @@ public class Renderer {
         LineCanvas.getInstance().clearLines();
         PolygonCanvas.getInstance().clearPolygons();
         RectangleCanvas.getInstance().clearRectangles();
+        CircleCanvas.getInstance().clearCircles();
         BasicFiller.getInstance().clearColorCanvas();
         rerender();
     }

@@ -14,12 +14,10 @@ public class Rectangle {
     private int thickness;
     private Alignment alignment;
 
-    public Rectangle(Point firstPoint, Point secondPoint, Color color, Alignment alignment, int thickness) {
+    public Rectangle(Point firstPoint, Point secondPoint) {
+        this.color = StateStore.getInstance().lineColor;
         addPoint(firstPoint);
         createFromTwoPoints(secondPoint);
-        this.color = color;
-        this.alignment = alignment;
-        this.thickness = thickness;
     }
 
     public void createFromTwoPoints(Point secondPoint) {

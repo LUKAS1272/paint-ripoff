@@ -5,6 +5,7 @@ public enum ActionType {
     Polygon,
     Fill,
     Rectangle,
+    Circle,
     Hand, // To be implemented
     Edit, // To be implemented
 }

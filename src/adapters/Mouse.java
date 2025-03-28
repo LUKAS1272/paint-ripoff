@@ -1,9 +1,10 @@
 package adapters;
 
+import controllers.CircleController;
 import controllers.LineController;
 import controllers.PolygonController;
 import controllers.RectangleController;
-import models.Rectangle;
+import models.canvases.CircleCanvas;
 import models.canvases.RectangleCanvas;
 import stores.EnumStore;
 import fillers.BasicFiller;
@@ -12,7 +13,6 @@ import utilities.Frame;
 import models.Point;
 import utilities.Renderer;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -66,6 +66,14 @@ public class Mouse {
                                     .getInstance()
                                     .createRectangle(e.getX(), e.getY());
                             break;
+                        case Circle:
+                            CircleController
+                                    .getInstance()
+                                    .createPoint(e.getX(), e.getY());
+                            CircleController
+                                    .getInstance()
+                                    .createCircle(e.getX(), e.getY());
+                            break;
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) { // Middle or right click
                     System.out.println("Move line");
@@ -100,7 +108,11 @@ public class Mouse {
                         RectangleCanvas
                                 .getInstance()
                                 .editLastRectangle(new Point(e.getX(), e.getY()));
-                        Renderer.getInstance().rerender();
+                        break;
+                    case Circle:
+                        CircleCanvas
+                                .getInstance()
+                                .editLastCircle(new Point(e.getX(), e.getY()));
                         break;
                 }
             }

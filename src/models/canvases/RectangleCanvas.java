@@ -1,8 +1,8 @@
 package models.canvases;
 
 import models.Point;
-import models.Polygon;
 import models.Rectangle;
+import utilities.Renderer;
 
 import java.util.ArrayList;
 
@@ -24,11 +24,12 @@ public class RectangleCanvas {
         this.rectangles.add(rectangle);
     }
 
-    public void editLastRectangle(Point secondPoint) { this.rectangles.getLast().createFromTwoPoints(secondPoint); }
+    public void editLastRectangle(Point secondPoint) {
+        this.rectangles.getLast().createFromTwoPoints(secondPoint);
+        Renderer.getInstance().rerender();
+    }
 
     public void clearRectangles() { this.rectangles.clear(); }
-
-    public Rectangle getRectanglesAt(int index) { return this.rectangles.get(index); }
 
     public ArrayList<Rectangle> getRectangles() {
         return rectangles;
