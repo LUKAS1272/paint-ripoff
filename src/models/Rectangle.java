@@ -1,0 +1,57 @@
+package models;
+
+import enums.Alignment;
+import enums.LineType;
+
+import java.awt.*;
+import java.util.ArrayList;
+
+public class Rectangle {
+    private ArrayList<Point> points = new ArrayList<>();
+    private Color color;
+    private int thickness;
+    private LineType lineType;
+
+    public Rectangle(Point firstPoint, Point secondPoint, Color color, LineType lineType, int thickness) {
+        addPoint(firstPoint);
+        createFromTwoPoints(secondPoint);
+        this.color = color;
+        this.lineType = lineType;
+        this.thickness = thickness;
+    }
+
+    public void createFromTwoPoints(Point secondPoint) {
+        Point firstPoint = points.getFirst();
+        points.clear();
+
+        addPoint(firstPoint);
+        addPoint(new Point(firstPoint.getX(), secondPoint.getY()));
+        addPoint(secondPoint);
+        addPoint(new Point(secondPoint.getX(), firstPoint.getY()));
+    }
+
+    public void addPoint(Point point) { this.points.add(point); }
+
+    public Color getColor() { return color; }
+
+    public LineType getLineType() { return lineType; }
+
+    public ArrayList<Point> getPoints() { return points; }
+
+    public ArrayList<Line> getLines() {
+        ArrayList<Line> lines = new ArrayList<>();
+        if (points.size() < 2) { return lines; } // If there are not at least 2 points to form a line, return empty array
+
+        Point firstPoint, secondPoint;
+
+        for (int i = 1; i <= points.size(); i++) {
+            firstPoint = points.get(i - 1);
+            secondPoint = points.get(i % points.size());
+
+            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned, thickness);
+            lines.add(polygonLine);
+        }
+
+        return lines;
+    }
+}

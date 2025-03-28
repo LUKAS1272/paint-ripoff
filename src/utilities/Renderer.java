@@ -1,5 +1,7 @@
 package utilities;
 
+import models.Rectangle;
+import models.canvases.RectangleCanvas;
 import stores.EnumStore;
 import enums.LineType;
 import fillers.BasicFiller;
@@ -45,6 +47,10 @@ public class Renderer {
             TrivialLineRasterizer.getInstance().rasterizeArray(polygon.getLines());
         }
 
+        for (Rectangle rectangle : RectangleCanvas.getInstance().getRectangles()) {
+            TrivialLineRasterizer.getInstance().rasterizeArray(rectangle.getLines());
+        }
+
         Graphics2D g2d = (Graphics2D) Frame.getInstance().getRaster().getGraphics();
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 14));
@@ -57,6 +63,7 @@ public class Renderer {
     public void clear() { // Clears the canvas and rerenders frame
         LineCanvas.getInstance().clearLines();
         PolygonCanvas.getInstance().clearPolygons();
+        RectangleCanvas.getInstance().clearRectangles();
         BasicFiller.getInstance().clearColorCanvas();
         rerender();
     }

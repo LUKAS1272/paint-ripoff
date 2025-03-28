@@ -2,11 +2,15 @@ package adapters;
 
 import controllers.LineController;
 import controllers.PolygonController;
+import controllers.RectangleController;
+import models.Rectangle;
+import models.canvases.RectangleCanvas;
 import stores.EnumStore;
 import fillers.BasicFiller;
 import stores.StateStore;
 import utilities.Frame;
 import models.Point;
+import utilities.Renderer;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -54,6 +58,14 @@ public class Mouse {
                                     .getInstance()
                                     .fill(new Point(e.getX(), e.getY()), StateStore.getInstance().fillColor);
                             break;
+                        case Rectangle:
+                            RectangleController
+                                    .getInstance()
+                                    .createPoint(e.getX(), e.getY());
+                            RectangleController
+                                    .getInstance()
+                                    .createRectangle(e.getX(), e.getY());
+                            break;
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) { // Middle or right click
                     System.out.println("Move line");
@@ -65,7 +77,14 @@ public class Mouse {
             public void mouseReleased(MouseEvent e) {
                 switch (EnumStore.getInstance().actionType) {
                     case Line:
-                        LineController.getInstance().createLine(e.getX(), e.getY());
+                        LineController
+                                .getInstance()
+                                .createLine(e.getX(), e.getY());
+                        break;
+                    case Rectangle:
+                        RectangleController
+                                .getInstance()
+                                .createRectangle(e.getX(), e.getY());
                         break;
                 }
             }
@@ -73,7 +92,15 @@ public class Mouse {
             public void mouseDragged(MouseEvent e) {
                 switch (EnumStore.getInstance().actionType) {
                     case Line:
-                        LineController.getInstance().MoveLineDrag(e.getX(), e.getY());
+                        LineController
+                                .getInstance()
+                                .MoveLineDrag(e.getX(), e.getY());
+                        break;
+                    case Rectangle:
+                        RectangleCanvas
+                                .getInstance()
+                                .editLastRectangle(new Point(e.getX(), e.getY()));
+                        Renderer.getInstance().rerender();
                         break;
                 }
             }
