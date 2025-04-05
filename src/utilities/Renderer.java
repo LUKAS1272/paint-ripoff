@@ -84,10 +84,10 @@ public class Renderer {
                 TrivialLineRasterizer.getInstance().rasterize(line, removeMode);
                 break;
             case LineType.Dotted:
-                DottedLineRasterizer.getInstance().rasterize(line);
+                DottedLineRasterizer.getInstance().rasterize(line, removeMode);
                 break;
             case LineType.Dashed:
-                DashedLineRasterizer.getInstance().rasterize(line);
+                DashedLineRasterizer.getInstance().rasterize(line, removeMode);
                 break;
         }
     }

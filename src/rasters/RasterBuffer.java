@@ -50,6 +50,8 @@ public class RasterBuffer {
     }
 
     // --------------------------------------------------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------------------------------------------------
 
     public String getTopLayer(int x, int y) {
         ArrayList<String> currentBuffer = getBuffer(x, y);
@@ -76,6 +78,18 @@ public class RasterBuffer {
 
     public HashMap<String, ArrayList<String>> getBuffer() {
         return buffer;
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+
+    public void setPixel(int x, int y, ActionType objectType, int objectId, boolean removeMode) {
+        if (x >= 0 && x < Frame.getInstance().getRaster().getWidth() && y >= 0 && y < Frame.getInstance().getRaster().getHeight()) { // Out of bounds prevention
+            if (removeMode) {
+                removeFromBuffer(x, y, objectType, objectId);
+            } else {
+                addToBuffer(x, y, objectType, objectId);
+            }
+        }
     }
 
     public String buildBufferId(ActionType objectType, int id) {

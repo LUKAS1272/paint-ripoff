@@ -1,22 +1,15 @@
 package rasterizers;
 
+import enums.ActionType;
 import enums.Alignment;
 import models.Line;
-import rasters.Raster;
-import utilities.Frame;
-
-import java.awt.*;
-import java.util.ArrayList;
+import rasters.RasterBuffer;
+import utilities.Renderer;
 
 public class DottedLineRasterizer implements Rasterizer {
     private static DottedLineRasterizer instance;
 
-    private Raster raster;
-
-    @Override
-    public void setColor(Color color) {}
-
-    private DottedLineRasterizer() { this.raster = Frame.getInstance().getRaster();}
+    private DottedLineRasterizer() {}
 
     public static DottedLineRasterizer getInstance() {
         if (instance == null) {
@@ -26,7 +19,7 @@ public class DottedLineRasterizer implements Rasterizer {
     }
 
     @Override
-    public void rasterize(Line line) {
+    public void rasterize(Line line, boolean removeMode) {
         int x1 = line.getPoint1().getX();
         int y1 = line.getPoint1().getY();
         int x2 = line.getPoint2().getX();
@@ -57,9 +50,7 @@ public class DottedLineRasterizer implements Rasterizer {
                     if (layerNumber % 2 == 0) { y += layerNumber / 2; }
                     else { y -= (layerNumber + 1) / 2; }
 
-                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                        raster.setPixel(x, y, line.getColor().getRGB());
-                    }
+                    RasterBuffer.getInstance().setPixel(x, y, ActionType.Line, line.getId(), removeMode);
 
                     untilSpace--;
                     if (untilSpace == 0) {
@@ -87,9 +78,7 @@ public class DottedLineRasterizer implements Rasterizer {
                     if (layerNumber % 2 == 0) { x += layerNumber / 2; }
                     else { x -= (layerNumber + 1) / 2; }
 
-                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                        raster.setPixel(x, y, line.getColor().getRGB());
-                    }
+                    RasterBuffer.getInstance().setPixel(x, y, ActionType.Line, line.getId(), removeMode);
 
                     untilSpace--;
                     if (untilSpace == 0) {
@@ -99,11 +88,7 @@ public class DottedLineRasterizer implements Rasterizer {
                 }
             }
         }
-    }
 
-    public void rasterizeArray(ArrayList<Line> lines) {
-        for (Line line : lines) {
-            rasterize(line);
-        }
+        Renderer.getInstance().rerender();
     }
 }
