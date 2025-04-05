@@ -2,13 +2,14 @@ package fillers;
 
 import models.Point;
 import rasters.Raster;
+import stores.EnumStore;
 import utilities.Frame;
 import utilities.Renderer;
 
 import java.awt.*;
 import java.util.Stack;
 
-public class BasicFiller implements Filler {
+public class BasicFiller {
     private static BasicFiller instance;
 
     private Raster raster;
@@ -29,14 +30,15 @@ public class BasicFiller implements Filler {
         return instance;
     }
 
-    public int[][] getColorCanvas() { return colorCanvas; }
+    public int getBackgroundPixelColor(int x, int y) {
+        return colorCanvas[x][y] == 0 ? Frame.getInstance().getBackgroundColor() : colorCanvas[x][y];
+    }
 
     public void clearColorCanvas() {  colorCanvas = new int[raster.getWidth()][raster.getHeight()]; }
 
-    @Override
-    public void fill(Point click, Color fillColor) {
+    public void fill(Point click) {
         int baseColor = raster.getPixel(click.getX(), click.getY());
-        int fillColorInt = fillColor.getRGB();
+        int fillColorInt = EnumStore.getInstance().getDrawColor().getRGB();
 
         if (baseColor == fillColorInt) { return; }
 
@@ -122,5 +124,5 @@ class Cords {
 
     public int getX() { return this.x; }
 
-    public int getY() { return this.y;}
+    public int getY() { return this.y; }
 }

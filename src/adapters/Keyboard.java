@@ -97,6 +97,9 @@ public class Keyboard {
                 if (pressedKeys.contains(KeyEvent.VK_E)) {
                     EnumStore.getInstance().moveEnum(Enum.ActionType);
                     Renderer.getInstance().rerender();
+                } else if (pressedKeys.contains(KeyEvent.VK_I)) {
+                    EnumStore.getInstance().moveEnum(Enum.DrawColor);
+                    Renderer.getInstance().rerender();
                 }
             }
         };

@@ -1,5 +1,6 @@
 package models;
 
+import stores.EnumStore;
 import stores.StateStore;
 
 import java.awt.*;
@@ -16,7 +17,7 @@ public class Circle {
 
     public Circle(Point firstPoint, Point secondPoint) {
         this.firstPoint = firstPoint;
-        this.color = StateStore.getInstance().lineColor;
+        this.color = EnumStore.getInstance().getDrawColor();
         editCircle(secondPoint);
     }
 

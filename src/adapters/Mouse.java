@@ -6,6 +6,7 @@ import controllers.PolygonController;
 import controllers.RectangleController;
 import models.canvases.CircleCanvas;
 import models.canvases.RectangleCanvas;
+import rasters.RasterBuffer;
 import stores.EnumStore;
 import fillers.BasicFiller;
 import stores.StateStore;
@@ -15,6 +16,8 @@ import utilities.Renderer;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Mouse {
     // Singleton functions
@@ -46,7 +49,7 @@ public class Mouse {
                         case Line:
                             LineController
                                     .getInstance()
-                                    .createPoint(e.getX(), e.getY());
+                                    .createNewLine(e.getX(), e.getY());
                             break;
                         case Polygon:
                             PolygonController
@@ -56,7 +59,7 @@ public class Mouse {
                         case Fill:
                             BasicFiller
                                     .getInstance()
-                                    .fill(new Point(e.getX(), e.getY()), StateStore.getInstance().fillColor);
+                                    .fill(new Point(e.getX(), e.getY()));
                             break;
                         case Rectangle:
                             RectangleController
@@ -85,9 +88,11 @@ public class Mouse {
             public void mouseReleased(MouseEvent e) {
                 switch (EnumStore.getInstance().actionType) {
                     case Line:
-                        LineController
-                                .getInstance()
-                                .createLine(e.getX(), e.getY());
+//                        LineController
+//                                .getInstance()
+//                                .createLine(e.getX(), e.getY());
+                        LineController.getInstance().clearPoint();
+                        HashMap<String, ArrayList<String>> test = RasterBuffer.getInstance().getBuffer();
                         break;
                     case Rectangle:
                         RectangleController

@@ -15,7 +15,7 @@ public class Rectangle {
     private Alignment alignment;
 
     public Rectangle(Point firstPoint, Point secondPoint) {
-        this.color = StateStore.getInstance().lineColor;
+        this.color = EnumStore.getInstance().getDrawColor();
         addPoint(firstPoint);
         createFromTwoPoints(secondPoint);
     }
@@ -66,7 +66,7 @@ public class Rectangle {
             firstPoint = points.get(i - 1);
             secondPoint = points.get(i % points.size());
 
-            Line polygonLine = new Line(firstPoint, secondPoint, color, LineType.Default, Alignment.Unaligned, thickness);
+            Line polygonLine = new Line(firstPoint, secondPoint, color, LineType.Default, Alignment.Unaligned, thickness, -1);
             lines.add(polygonLine);
         }
 

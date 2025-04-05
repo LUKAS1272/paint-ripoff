@@ -1,5 +1,6 @@
 package controllers;
 
+import rasterizers.TrivialLineRasterizer;
 import stores.EnumStore;
 import models.Point;
 import models.Line;
@@ -8,10 +9,6 @@ import models.canvases.LineCanvas;
 import stores.StateStore;
 import utilities.Frame;
 import utilities.Renderer;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LineController {
     private static LineController instance;
@@ -25,12 +22,18 @@ public class LineController {
         return instance;
     }
 
+    private int id = 0;
+    private int currentId = 0;
+
     // -----------------------------------------
 
     private Point point;
 
-    public void createPoint(int x, int y) {
+    public void createNewLine(int x, int y) {
         point = new Point(x, y);
+        id += 1; // Iterate id of the newly created line
+        currentId = id; // Update currently used id to the new line id
+        createLine(x, y); // Create a line object
     }
 
     public void clearPoint() {
@@ -40,11 +43,9 @@ public class LineController {
     public void createLine(int x, int y) {
         if (point != null) {
             Point point2 = new Point(x, y);
-            Line line = new Line(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().getThickness());
-            clearPoint();
+            Line line = new Line(point, point2, EnumStore.getInstance().getDrawColor(), EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().getThickness(), currentId);
 
             LineCanvas.getInstance().addLine(line); // Add currently drawn line to the canvas
-            Renderer.getInstance().rerender();
         }
     }
 
@@ -82,17 +83,21 @@ public class LineController {
 
         if (closestDistance <= tolerance) { // If the closest point is within tolerance
             point = new Point(otherPoint.getX(), otherPoint.getY());
-            LineCanvas.getInstance().removeLineAt(closestLineIndex);
+            currentId = LineCanvas.getInstance().getLines().get(closestLineIndex).getId();
         }
     }
 
     public void MoveLineDrag(int x, int y) {
         if (point != null) {
             Point point2 = new Point(x, y);
-            Line line = new Line(point, point2, StateStore.getInstance().lineColor, EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().getThickness());
 
-            Renderer.getInstance().rerender();
-            Renderer.getInstance().renderLines(new ArrayList<>(List.of(line))); // Render currently drawn line
+            Renderer.getInstance().renderLine(LineCanvas.getInstance().getLineById(currentId), true); // Remove current line from buffer
+
+            Line line = new Line(point, point2, EnumStore.getInstance().getDrawColor(), EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().getThickness(), currentId);
+            LineCanvas.getInstance().editLineById(currentId, line);
+
+            Renderer.getInstance().renderLine(LineCanvas.getInstance().getLineById(currentId), false); // Add current line to buffer
+
             Frame.getInstance().getPanel().repaint(); // Update the canvas
         }
     }

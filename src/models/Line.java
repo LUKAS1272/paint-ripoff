@@ -12,14 +12,16 @@ public class Line {
     private LineType lineType;
     private Alignment alignment;
     private int thickness;
+    private int id;
 
-    public Line(Point point1, Point point2, Color color, LineType lineType, Alignment alignment, int thickness) {
+    public Line(Point point1, Point point2, Color color, LineType lineType, Alignment alignment, int thickness, int id) {
         this.point1 = point1;
         this.point2 = point2;
         this.color = color;
         this.lineType = lineType;
         this.alignment = alignment;
         this.thickness = thickness;
+        this.id = id;
     }
 
     public Point getPoint1() {
@@ -43,4 +45,6 @@ public class Line {
     }
 
     public int getThickness() { return thickness; }
+
+    public int getId() { return id; }
 }

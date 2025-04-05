@@ -1,9 +1,10 @@
 package stores;
 
-import controllers.LineController;
 import controllers.PolygonController;
 import enums.*;
 import enums.storeEnums.Enum;
+
+import java.awt.*;
 
 public class EnumStore {
     private static EnumStore instance;
@@ -11,6 +12,7 @@ public class EnumStore {
     public Alignment alignment = Alignment.values()[0];
     public LineType lineType = LineType.values()[0];
     public ActionType actionType = ActionType.values()[0];
+    public DrawColor drawColor = DrawColor.values()[0];
 
     private EnumStore() {}
 
@@ -37,6 +39,24 @@ public class EnumStore {
 
                 PolygonController.getInstance().clearPoint();
                 break;
+            case DrawColor:
+                DrawColor[] allDrawColors = DrawColor.values(); // Gets all enum object
+                drawColor = allDrawColors[(drawColor.ordinal() + 1) % allDrawColors.length]; // Assigns next enum object
+                System.out.println(drawColor);
+                break;
         }
+    }
+
+    public Color getDrawColor() {
+        return switch (drawColor) {
+            case White -> Color.white;
+            case Red -> Color.red;
+            case Green -> Color.green;
+            case Blue -> Color.blue;
+            case Yellow -> Color.yellow;
+            case Magenta -> Color.magenta;
+            case Cyan -> Color.cyan;
+            default -> null;
+        };
     }
 }

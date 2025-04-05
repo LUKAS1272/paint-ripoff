@@ -10,7 +10,7 @@ import java.io.Serial;
 public class Frame {
     private final int width = 1920 / 2;
     private final int height = 1080;
-    private final int backgrounColor = 0xaaaaaa;
+    private final int backgroundColor = 0x000000;
 
     private static Frame instance;
 
@@ -47,8 +47,9 @@ public class Frame {
         panel.requestFocus();
         panel.requestFocusInWindow();
 
-        raster.setClearColor(backgrounColor);
+        raster.setClearColor(backgroundColor);
         raster.clear();
+        panel.repaint();
     }
 
     public static Frame getInstance() {
@@ -60,4 +61,5 @@ public class Frame {
 
     public JPanel getPanel() { return panel; }
     public Raster getRaster() { return raster; }
+    public int getBackgroundColor() { return backgroundColor; }
 }

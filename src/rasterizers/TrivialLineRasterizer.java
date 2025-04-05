@@ -1,8 +1,10 @@
 package rasterizers;
 
+import enums.ActionType;
 import enums.Alignment;
 import models.Line;
 import rasters.Raster;
+import rasters.RasterBuffer;
 import utilities.Frame;
 
 import java.awt.*;
@@ -27,6 +29,10 @@ public class TrivialLineRasterizer implements Rasterizer {
 
     @Override
     public void rasterize(Line line) {
+        rasterize(line, false);
+    }
+
+    public void rasterize(Line line, boolean removeMode) { // False mode = add to buffer ; True mode = remove from buffer
         int x1 = line.getPoint1().getX();
         int y1 = line.getPoint1().getY();
         int x2 = line.getPoint2().getX();
@@ -53,7 +59,8 @@ public class TrivialLineRasterizer implements Rasterizer {
                     else { y -= (layerNumber + 1) / 2; }
 
                     if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                        raster.setPixel(x, y, line.getColor().getRGB());
+                        if (removeMode) { RasterBuffer.getInstance().removeFromBuffer(x, y, ActionType.Line, line.getId()); }
+                        else { RasterBuffer.getInstance().addToBuffer(x, y, ActionType.Line, line.getId()); }
                     }
                 }
             }
@@ -73,7 +80,8 @@ public class TrivialLineRasterizer implements Rasterizer {
                     else { x -= (layerNumber + 1) / 2; }
 
                     if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                        raster.setPixel(x, y, line.getColor().getRGB());
+                        if (removeMode) { RasterBuffer.getInstance().removeFromBuffer(x, y, ActionType.Line, line.getId()); }
+                        else { RasterBuffer.getInstance().addToBuffer(x, y, ActionType.Line, line.getId()); }
                     }
                 }
             }

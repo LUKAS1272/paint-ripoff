@@ -4,4 +4,5 @@ public enum Enum {
     Alignment,
     LineType,
     ActionType,
+    DrawColor,
 }
