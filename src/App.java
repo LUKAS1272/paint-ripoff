@@ -12,18 +12,6 @@ public class App {
         // Must be initialized first, because it stores RASTER and PANEL
         Frame.getInstance(); // Initializes raster and panel variable, creates app frame
 
-        // Initializes canvases to be drawn on
-        LineCanvas.getInstance();
-        PolygonCanvas.getInstance();
-
-        // Initializes rasterizers to rasterize lines
-        TrivialLineRasterizer.getInstance();
-        DottedLineRasterizer.getInstance();
-        DashedLineRasterizer.getInstance();
-
-        // Initializes filler to fill closed objects
-        BasicFiller.getInstance();
-
         // Adds listeners to add dynamic controls
         Mouse.getInstance();
         Keyboard.getInstance();
