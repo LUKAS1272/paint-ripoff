@@ -2,6 +2,10 @@ package models;
 
 import enums.Alignment;
 import enums.LineType;
+import stores.EnumStore;
+import stores.StateStore;
+import utilities.Frame;
+import utilities.Renderer;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,17 +15,32 @@ public class Polygon {
     private Color color;
     private int thickness;
     private LineType lineType;
+    private int id;
 
-    public Polygon(Point firstPoint, Color color, LineType lineType, int thickness) {
+    public Polygon(Point firstPoint, Color color, LineType lineType, int thickness, int id) {
         addPoint(firstPoint);
         this.color = color;
         this.lineType = lineType;
         this.thickness = thickness;
+        this.id = id;
     }
 
     public void addPoint(Point point) { this.points.add(point); }
 
     public Color getColor() { return color; }
+
+    public void updateProperties() {
+        lineType = LineType.Default;
+        Renderer.getInstance().renderLines(getLines(), true, "P" + id); // Unrender
+
+        color = EnumStore.getInstance().getDrawColor();
+        lineType = EnumStore.getInstance().lineType;
+        thickness = StateStore.getInstance().getThickness();
+
+        // Rerender
+        Renderer.getInstance().renderLines(getLines(), false, "P" + id);
+        Frame.getInstance().getPanel().repaint();
+    }
 
     public LineType getLineType() { return lineType; }
 
@@ -43,4 +62,6 @@ public class Polygon {
 
         return lines;
     }
+
+    public int getId() { return id; }
 }

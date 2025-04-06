@@ -3,6 +3,7 @@ package rasters;
 import enums.ActionType;
 import fillers.BasicFiller;
 import models.canvases.LineCanvas;
+import models.canvases.PolygonCanvas;
 import stores.EnumStore;
 import utilities.Frame;
 
@@ -27,19 +28,19 @@ public class RasterBuffer {
 
     HashMap<String, ArrayList<String>> buffer = new HashMap<String, ArrayList<String>>();
 
-    public void addToBuffer(int x, int y, ActionType objectType, int objectId) {
+    public void addToBuffer(int x, int y, String targetBuffer) {
         ArrayList<String> currentBuffer = getBuffer(x, y);
 
-        if (!currentBuffer.contains(buildBufferId(objectType, objectId))) { // If the object isn't part of the buffer on these cords yet
-            currentBuffer.add(buildBufferId(objectType, objectId)); // Add the object to the buffer
+        if (!currentBuffer.contains(targetBuffer)) { // If the object isn't part of the buffer on these cords yet
+            currentBuffer.add(targetBuffer); // Add the object to the buffer
             buffer.put(x + ";" + y, currentBuffer); // Update the buffer
             Frame.getInstance().getRaster().setPixel(x, y, EnumStore.getInstance().getDrawColor().getRGB());
         }
     }
 
-    public void removeFromBuffer(int x, int y, ActionType objectType, int objectId) {
+    public void removeFromBuffer(int x, int y, String targetBuffer) {
         ArrayList<String> currentBuffer = getBuffer(x, y);
-        currentBuffer.remove(buildBufferId(objectType, objectId)); // Remove the object
+        currentBuffer.remove(targetBuffer); // Remove the object
 
         if (currentBuffer.isEmpty()) {
             buffer.remove(x + ";" + y);
@@ -68,6 +69,7 @@ public class RasterBuffer {
 
         return switch (objectType) {
             case 'L' -> LineCanvas.getInstance().getLineById(objectId).getColor().getRGB();
+            case 'P' -> PolygonCanvas.getInstance().getPolygonById(objectId).getColor().getRGB();
             default -> BasicFiller.getInstance().getBackgroundPixelColor(x, y);
         };
     }
@@ -82,12 +84,12 @@ public class RasterBuffer {
 
     // --------------------------------------------------------------------------------------------------------
 
-    public void setPixel(int x, int y, ActionType objectType, int objectId, boolean removeMode) {
+    public void setPixel(int x, int y, String targetBuffer, boolean removeMode) {
         if (x >= 0 && x < Frame.getInstance().getRaster().getWidth() && y >= 0 && y < Frame.getInstance().getRaster().getHeight()) { // Out of bounds prevention
             if (removeMode) {
-                removeFromBuffer(x, y, objectType, objectId);
+                removeFromBuffer(x, y, targetBuffer);
             } else {
-                addToBuffer(x, y, objectType, objectId);
+                addToBuffer(x, y, targetBuffer);
             }
         }
     }

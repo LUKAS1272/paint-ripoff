@@ -19,7 +19,7 @@ public class TrivialLineRasterizer implements Rasterizer {
     }
 
     @Override
-    public void rasterize(Line line, boolean removeMode) { // False mode = add to buffer ; True mode = remove from buffer
+    public void rasterize(Line line, boolean removeMode, String bufferOverride) { // False mode = add to buffer ; True mode = remove from buffer
         int x1 = line.getPoint1().getX();
         int y1 = line.getPoint1().getY();
         int x2 = line.getPoint2().getX();
@@ -45,7 +45,8 @@ public class TrivialLineRasterizer implements Rasterizer {
                     if (layerNumber % 2 == 0) { y += layerNumber / 2; }
                     else { y -= (layerNumber + 1) / 2; }
 
-                    RasterBuffer.getInstance().setPixel(x, y, ActionType.Line, line.getId(), removeMode);
+                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Line, line.getId());
+                    RasterBuffer.getInstance().setPixel(x, y, bufferOverride != null ? bufferOverride : targetBuffer, removeMode);
                 }
             }
         } else {
@@ -63,7 +64,8 @@ public class TrivialLineRasterizer implements Rasterizer {
                     if (layerNumber % 2 == 0) { x += layerNumber / 2; }
                     else { x -= (layerNumber + 1) / 2; }
 
-                    RasterBuffer.getInstance().setPixel(x, y, ActionType.Line, line.getId(), removeMode);
+                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Line, line.getId());
+                    RasterBuffer.getInstance().setPixel(x, y, bufferOverride != null ? bufferOverride : targetBuffer, removeMode);
                 }
             }
         }

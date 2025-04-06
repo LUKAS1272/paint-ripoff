@@ -13,6 +13,7 @@ import rasterizers.DottedLineRasterizer;
 import rasterizers.TrivialLineRasterizer;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Renderer {
     private static Renderer instance = null;
@@ -78,16 +79,22 @@ public class Renderer {
         rerender();
     }
 
-    public void renderLine(Line line, boolean removeMode) {
+    public void renderLines(ArrayList<Line> lines, boolean removeMode, String bufferOverride) {
+        for (Line line : lines) {
+            renderLine(line, removeMode, bufferOverride);
+        }
+    }
+
+    public void renderLine(Line line, boolean removeMode, String bufferOverride) {
         switch (line.getLineType()) {
             case LineType.Default:
-                TrivialLineRasterizer.getInstance().rasterize(line, removeMode);
+                TrivialLineRasterizer.getInstance().rasterize(line, removeMode, bufferOverride);
                 break;
             case LineType.Dotted:
-                DottedLineRasterizer.getInstance().rasterize(line, removeMode);
+                DottedLineRasterizer.getInstance().rasterize(line, removeMode, bufferOverride);
                 break;
             case LineType.Dashed:
-                DashedLineRasterizer.getInstance().rasterize(line, removeMode);
+                DashedLineRasterizer.getInstance().rasterize(line, removeMode, bufferOverride);
                 break;
         }
     }

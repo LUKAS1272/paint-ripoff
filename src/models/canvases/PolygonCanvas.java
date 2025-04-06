@@ -1,5 +1,6 @@
 package models.canvases;
 
+import models.Line;
 import models.Point;
 import models.Polygon;
 
@@ -23,11 +24,23 @@ public class PolygonCanvas {
         this.polygons.add(polygon);
     }
 
-    public void editLastPolygon(Point newPoint) { this.polygons.getLast().addPoint(newPoint); }
+    public void editPolygonById(Point newPoint, int id) {
+        Polygon polygonToEdit = getPolygonById(id);
+        polygons.remove(polygonToEdit);
+        polygonToEdit.addPoint(newPoint);
+        polygons.add(polygonToEdit);
+    }
 
     public void clearPolygons() { this.polygons.clear(); }
 
-    public Polygon getPolygonAt(int index) { return this.polygons.get(index); }
+    public Polygon getPolygonById(int id) {
+        for (Polygon polygon : polygons) {
+            if (polygon.getId() == id) {
+                return polygon;
+            }
+        }
+        return null;
+    }
 
     public ArrayList<Polygon> getPolygons() {
         return polygons;

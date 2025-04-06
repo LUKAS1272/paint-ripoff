@@ -91,12 +91,12 @@ public class LineController {
         if (point != null) {
             Point point2 = new Point(x, y);
 
-            Renderer.getInstance().renderLine(LineCanvas.getInstance().getLineById(currentId), true); // Remove current line from buffer
+            Renderer.getInstance().renderLine(LineCanvas.getInstance().getLineById(currentId), true, null); // Remove current line from buffer
 
             Line line = new Line(point, point2, EnumStore.getInstance().getDrawColor(), EnumStore.getInstance().lineType, EnumStore.getInstance().alignment, StateStore.getInstance().getThickness(), currentId);
             LineCanvas.getInstance().editLineById(currentId, line);
 
-            Renderer.getInstance().renderLine(LineCanvas.getInstance().getLineById(currentId), false); // Add current line to buffer
+            Renderer.getInstance().renderLine(LineCanvas.getInstance().getLineById(currentId), false, null); // Add current line to buffer
 
             Frame.getInstance().getPanel().repaint(); // Update the canvas
         }

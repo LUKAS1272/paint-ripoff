@@ -3,5 +3,5 @@ package rasterizers;
 import models.Line;
 
 public interface Rasterizer {
-    void rasterize(Line line, boolean removeMode);
+    void rasterize(Line line, boolean removeMode, String bufferOverride);
 }
