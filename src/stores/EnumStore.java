@@ -42,7 +42,6 @@ public class EnumStore {
             case DrawColor:
                 DrawColor[] allDrawColors = DrawColor.values(); // Gets all enum object
                 drawColor = allDrawColors[(drawColor.ordinal() + 1) % allDrawColors.length]; // Assigns next enum object
-                System.out.println(drawColor);
                 break;
         }
     }

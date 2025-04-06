@@ -37,7 +37,6 @@ public class PolygonController {
     }
 
     public void createPolygon(int x, int y) {
-        System.out.println("Creating Polygon");
         if (point == null) { // If there is no point created, create one and register polygon
             id += 1; // Iterate id of the newly created polygon
             currentId = id;

@@ -79,7 +79,6 @@ public class Mouse {
                             break;
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) { // Middle or right click
-                    System.out.println("Move line");
                     LineController.getInstance().MoveLineClick(e.getX(), e.getY());
                 }
             }
