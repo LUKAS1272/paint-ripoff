@@ -1,12 +1,10 @@
 package controllers;
 
-import models.Line;
+import enums.ActionType;
 import models.Point;
 import models.Rectangle;
-import models.canvases.LineCanvas;
 import models.canvases.RectangleCanvas;
-import stores.EnumStore;
-import stores.StateStore;
+import rasters.RasterBuffer;
 import utilities.Renderer;
 
 public class RectangleController {
@@ -25,8 +23,13 @@ public class RectangleController {
 
     private Point point;
 
+    private int id = 0;
+    private int currentId = 0;
+
     public void createPoint(int x, int y) {
         point = new Point(x, y);
+        id += 1;
+        currentId = id;
     }
 
     public void clearPoint() {
@@ -34,12 +37,22 @@ public class RectangleController {
     }
 
     public void createRectangle(int x, int y) {
-        if (point != null) {
+        if (point == null) {
+            createPoint(x, y);
             Point point2 = new Point(x, y);
-            Rectangle rectangle = new Rectangle(point, point2);
-            clearPoint();
+            Rectangle rectangle = new Rectangle(point, point2, currentId);
 
-            RectangleCanvas.getInstance().addRectangle(rectangle); // Add currently drawn line to the canvas
+            RectangleCanvas.getInstance().addRectangle(rectangle); // Add currently drawn rectangle to the canvas
+            RectangleCanvas.getInstance().getRectangleById(currentId).updateProperties();
+            point = new Point(x, y);
+
+            Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
+            Renderer.getInstance().renderLines(oldRectangle.getLines(), true, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Remove
+
+            RectangleCanvas.getInstance().editRectangleById(point, currentId);
+            Rectangle newRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
+            Renderer.getInstance().renderLines(newRectangle.getLines(), false, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Add
+
             Renderer.getInstance().rerender();
         }
     }

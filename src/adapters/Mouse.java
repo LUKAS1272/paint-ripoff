@@ -64,9 +64,6 @@ public class Mouse {
                         case Rectangle:
                             RectangleController
                                     .getInstance()
-                                    .createPoint(e.getX(), e.getY());
-                            RectangleController
-                                    .getInstance()
                                     .createRectangle(e.getX(), e.getY());
                             break;
                         case Circle:
@@ -87,16 +84,14 @@ public class Mouse {
             public void mouseReleased(MouseEvent e) {
                 switch (EnumStore.getInstance().actionType) {
                     case Line:
-//                        LineController
-//                                .getInstance()
-//                                .createLine(e.getX(), e.getY());
-                        LineController.getInstance().clearPoint();
-                        HashMap<String, ArrayList<String>> test = RasterBuffer.getInstance().getBuffer();
+                        LineController
+                                .getInstance()
+                                .clearPoint();
                         break;
                     case Rectangle:
                         RectangleController
                                 .getInstance()
-                                .createRectangle(e.getX(), e.getY());
+                                .clearPoint();
                         break;
                 }
             }
@@ -109,9 +104,9 @@ public class Mouse {
                                 .MoveLineDrag(e.getX(), e.getY());
                         break;
                     case Rectangle:
-                        RectangleCanvas
+                        RectangleController
                                 .getInstance()
-                                .editLastRectangle(new Point(e.getX(), e.getY()));
+                                .createRectangle(e.getX(), e.getY());
                         break;
                     case Circle:
                         CircleCanvas

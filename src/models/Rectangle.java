@@ -4,6 +4,8 @@ import enums.Alignment;
 import enums.LineType;
 import stores.EnumStore;
 import stores.StateStore;
+import utilities.Frame;
+import utilities.Renderer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,16 +15,35 @@ public class Rectangle {
     private Color color;
     private int thickness;
     private Alignment alignment;
+    private LineType lineType;
+    private int id;
 
-    public Rectangle(Point firstPoint, Point secondPoint) {
+    public Rectangle(Point firstPoint, Point secondPoint, int id) {
         this.color = EnumStore.getInstance().getDrawColor();
+        this.id = id;
+        this.lineType = EnumStore.getInstance().lineType;
         addPoint(firstPoint);
         createFromTwoPoints(secondPoint);
     }
 
+    public void updateProperties() {
+        lineType = LineType.Default;
+        Renderer.getInstance().renderLines(getLines(), true, "R" + id); // Unrender
+
+        color = EnumStore.getInstance().getDrawColor();
+        lineType = EnumStore.getInstance().lineType;
+        thickness = StateStore.getInstance().getThickness();
+
+        // Rerender
+        Renderer.getInstance().renderLines(getLines(), false, "R" + id);
+        Frame.getInstance().getPanel().repaint();
+    }
+
+    public int getId() { return id; }
+
     public void createFromTwoPoints(Point secondPoint) {
         thickness = StateStore.getInstance().getThickness(); // Updates the thickness of the object
-        alignment = EnumStore.getInstance().alignment; // Updates the alignment (rectangle / squalre)
+        alignment = EnumStore.getInstance().alignment; // Updates the alignment (rectangle / square)
 
         Point firstPoint = points.getFirst();
         points.clear();
@@ -66,7 +87,7 @@ public class Rectangle {
             firstPoint = points.get(i - 1);
             secondPoint = points.get(i % points.size());
 
-            Line polygonLine = new Line(firstPoint, secondPoint, color, LineType.Default, Alignment.Unaligned, thickness, -1);
+            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned, thickness, -1);
             lines.add(polygonLine);
         }
 

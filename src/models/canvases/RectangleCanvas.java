@@ -2,7 +2,6 @@ package models.canvases;
 
 import models.Point;
 import models.Rectangle;
-import utilities.Renderer;
 
 import java.util.ArrayList;
 
@@ -24,14 +23,21 @@ public class RectangleCanvas {
         this.rectangles.add(rectangle);
     }
 
-    public void editLastRectangle(Point secondPoint) {
-        this.rectangles.getLast().createFromTwoPoints(secondPoint);
-        Renderer.getInstance().rerender();
-    }
-
     public void clearRectangles() { this.rectangles.clear(); }
 
-    public ArrayList<Rectangle> getRectangles() {
-        return rectangles;
+    public Rectangle getRectangleById(int id) {
+        for (Rectangle rectangle : rectangles) {
+            if (rectangle.getId() == id) {
+                return rectangle;
+            }
+        }
+        return null;
+    }
+
+    public void editRectangleById(Point newPoint, int id) {
+        Rectangle rectangleToEdit = getRectangleById(id);
+        rectangles.remove(rectangleToEdit);
+        rectangleToEdit.createFromTwoPoints(newPoint);
+        rectangles.add(rectangleToEdit);
     }
 }
