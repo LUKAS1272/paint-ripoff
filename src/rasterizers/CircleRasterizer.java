@@ -1,8 +1,10 @@
 package rasterizers;
 
+import enums.ActionType;
 import models.Circle;
 import models.Point;
 import rasters.Raster;
+import rasters.RasterBuffer;
 import utilities.Frame;
 
 public class CircleRasterizer {
@@ -19,7 +21,7 @@ public class CircleRasterizer {
         return instance;
     }
 
-    public void rasterize(Circle circle) {
+    public void rasterize(Circle circle, boolean removeMode) {
         int radius = circle.getRadius() + circle.getThickness() - 1; // Add thickness to the radius in order to divide the thickness evenly
         int centerX = circle.getCenter().getX();
         int centerY = circle.getCenter().getY();
@@ -32,10 +34,9 @@ public class CircleRasterizer {
 
         for (int y = startY; y <= endY; y++) {
             for (int x = startX; x <= endX; x++) {
-                if (getDistance(circle.getCenter(), x, y) <= radius && getDistance(circle.getCenter(), x, y) >= circle.getRadius() - circle.getThickness() / 2) {
-                    if (x >= 0 && x < raster.getWidth() && y >= 0 && y < raster.getHeight()) { // Out of bounds prevention
-                        raster.setPixel(x, y, circle.getColor().getRGB());
-                    }
+                if (getDistance(circle.getCenter(), x, y) <= radius && getDistance(circle.getCenter(), x, y) >= circle.getRadius() - (float) circle.getThickness() / 2) {
+                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Circle, circle.getId());
+                    RasterBuffer.getInstance().setPixel(x, y, targetBuffer, removeMode);
                 }
             }
         }

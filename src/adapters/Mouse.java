@@ -69,9 +69,6 @@ public class Mouse {
                         case Circle:
                             CircleController
                                     .getInstance()
-                                    .createPoint(e.getX(), e.getY());
-                            CircleController
-                                    .getInstance()
                                     .createCircle(e.getX(), e.getY());
                             break;
                     }
@@ -93,6 +90,11 @@ public class Mouse {
                                 .getInstance()
                                 .clearPoint();
                         break;
+                    case Circle:
+                        CircleController
+                                .getInstance()
+                                .clearPoint();
+                        break;
                 }
             }
 
@@ -109,9 +111,9 @@ public class Mouse {
                                 .createRectangle(e.getX(), e.getY());
                         break;
                     case Circle:
-                        CircleCanvas
+                        CircleController
                                 .getInstance()
-                                .editLastCircle(new Point(e.getX(), e.getY()));
+                                .createCircle(e.getX(), e.getY());
                         break;
                 }
             }

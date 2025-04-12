@@ -1,7 +1,9 @@
 package utilities;
 
+import models.Circle;
 import models.canvases.CircleCanvas;
 import models.canvases.RectangleCanvas;
+import rasterizers.CircleRasterizer;
 import stores.EnumStore;
 import enums.LineType;
 import fillers.BasicFiller;
@@ -28,32 +30,6 @@ public class Renderer {
     }
 
     public void rerender()  {
-//        Frame.getInstance().getRaster().clear();
-//
-//        for (int y = 0; y < Frame.getInstance().getRaster().getHeight(); y++) {
-//            for (int x = 0; x < Frame.getInstance().getRaster().getWidth(); x++) {
-//                int color = BasicFiller.getInstance().getColorCanvas()[x][y];
-//
-//                if (color != 0) {
-//                    Frame.getInstance().getRaster().setPixel(x, y, color);
-//                }
-//            }
-//        }
-//
-//        renderLines(LineCanvas.getInstance().getLines());
-//
-//        for (Polygon polygon : PolygonCanvas.getInstance().getPolygons()) {
-//            TrivialLineRasterizer.getInstance().rasterizeArray(polygon.getLines());
-//        }
-//
-//        for (Rectangle rectangle : RectangleCanvas.getInstance().getRectangles()) {
-//            TrivialLineRasterizer.getInstance().rasterizeArray(rectangle.getLines());
-//        }
-//
-//        for (Circle circle : CircleCanvas.getInstance().getCircles()) {
-//            CircleRasterizer.getInstance().rasterize(circle);
-//        }
-//
         for (int x = 0; x < Frame.getInstance().getRaster().getWidth(); x++) {
             for (int y = 0; y < 50; y++) {
                 Frame.getInstance().getRaster().setPixel(x, y, 0);
@@ -77,6 +53,10 @@ public class Renderer {
         CircleCanvas.getInstance().clearCircles();
         BasicFiller.getInstance().clearColorCanvas();
         rerender();
+    }
+
+    public void renderCircle(Circle circle, boolean removeMode) {
+        CircleRasterizer.getInstance().rasterize(circle, removeMode);
     }
 
     public void renderLines(ArrayList<Line> lines, boolean removeMode, String bufferOverride) {

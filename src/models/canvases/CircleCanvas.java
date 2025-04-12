@@ -2,7 +2,6 @@ package models.canvases;
 
 import models.Circle;
 import models.Point;
-import utilities.Renderer;
 
 import java.util.ArrayList;
 
@@ -24,9 +23,20 @@ public class CircleCanvas {
         this.circles.add(circle);
     }
 
-    public void editLastCircle(Point secondPoint) {
-        this.circles.getLast().editCircle(secondPoint);
-        Renderer.getInstance().rerender();
+    public void editCircleById(Point newPoint, int id) {
+        Circle circleToEdit = getCircleById(id);
+        circles.remove(circleToEdit);
+        circleToEdit.editCircle(newPoint);
+        circles.add(circleToEdit);
+    }
+
+    public Circle getCircleById(int id) {
+        for (Circle circle : circles) {
+            if (circle.getId() == id) {
+                return circle;
+            }
+        }
+        return null;
     }
 
     public void clearCircles() { this.circles.clear(); }

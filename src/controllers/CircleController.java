@@ -21,8 +21,13 @@ public class CircleController {
 
     private Point point;
 
+    private int id = 0;
+    private int currentId = 0;
+
     public void createPoint(int x, int y) {
         point = new Point(x, y);
+        id += 1;
+        currentId = id;
     }
 
     public void clearPoint() {
@@ -30,12 +35,22 @@ public class CircleController {
     }
 
     public void createCircle(int x, int y) {
-        if (point != null) {
-            Point point2 = new Point(x, y);
-            Circle circle = new Circle(point, point2);
-            clearPoint();
+        if (point == null) {
+            createPoint(x, y);
+            Circle circle = new Circle(point, point, currentId);
 
-            CircleCanvas.getInstance().addCircle(circle); // Add currently drawn line to the canvas
+            CircleCanvas.getInstance().addCircle(circle); // Add currently drawn circle to the canvas
+        } else {
+            CircleCanvas.getInstance().getCircleById(currentId).updateProperties();
+            point = new Point(x, y);
+
+            Circle oldCircle = CircleCanvas.getInstance().getCircleById(currentId);
+            Renderer.getInstance().renderCircle(oldCircle, true); // Remove
+
+            CircleCanvas.getInstance().editCircleById(point, currentId);
+            Circle newCircle = CircleCanvas.getInstance().getCircleById(currentId);
+            Renderer.getInstance().renderCircle(newCircle, false); // Add
+
             Renderer.getInstance().rerender();
         }
     }

@@ -2,6 +2,7 @@ package rasters;
 
 import enums.ActionType;
 import fillers.BasicFiller;
+import models.canvases.CircleCanvas;
 import models.canvases.LineCanvas;
 import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
@@ -72,6 +73,7 @@ public class RasterBuffer {
             case 'L' -> LineCanvas.getInstance().getLineById(objectId).getColor().getRGB();
             case 'P' -> PolygonCanvas.getInstance().getPolygonById(objectId).getColor().getRGB();
             case 'R' -> RectangleCanvas.getInstance().getRectangleById(objectId).getColor().getRGB();
+            case 'C' -> CircleCanvas.getInstance().getCircleById(objectId).getColor().getRGB();
             default -> BasicFiller.getInstance().getBackgroundPixelColor(x, y);
         };
     }

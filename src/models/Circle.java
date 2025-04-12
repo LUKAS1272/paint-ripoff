@@ -2,6 +2,8 @@ package models;
 
 import stores.EnumStore;
 import stores.StateStore;
+import utilities.Frame;
+import utilities.Renderer;
 
 import java.awt.*;
 
@@ -9,15 +11,18 @@ public class Circle {
     private Point center;
     private int radius;
 
+    private int id;
+
     private Color color;
     private int thickness;
 
     private Point firstPoint;
     private Point secondPoint;
 
-    public Circle(Point firstPoint, Point secondPoint) {
+    public Circle(Point firstPoint, Point secondPoint, int id) {
         this.firstPoint = firstPoint;
         this.color = EnumStore.getInstance().getDrawColor();
+        this.id = id;
         editCircle(secondPoint);
     }
 
@@ -44,4 +49,17 @@ public class Circle {
     public int getThickness() { return this.thickness; }
 
     public Color getColor() { return this.color; }
+
+    public void updateProperties() {
+        Renderer.getInstance().renderCircle(this, true); // Unrender
+
+        color = EnumStore.getInstance().getDrawColor();
+        thickness = StateStore.getInstance().getThickness();
+
+        // Rerender
+        Renderer.getInstance().renderCircle(this, false);
+        Frame.getInstance().getPanel().repaint();
+    }
+
+    public int getId() { return this.id; }
 }
