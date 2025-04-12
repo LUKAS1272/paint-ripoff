@@ -38,11 +38,11 @@ public class RectangleController {
 
     public void createRectangle(int x, int y) {
         if (point == null) {
-            createPoint(x, y);
-            Point point2 = new Point(x, y);
-            Rectangle rectangle = new Rectangle(point, point2, currentId);
+            createPoint(x, y); // Create a point for new rectangle
+            Rectangle rectangle = new Rectangle(point, point, currentId);
 
             RectangleCanvas.getInstance().addRectangle(rectangle); // Add currently drawn rectangle to the canvas
+        } else {
             RectangleCanvas.getInstance().getRectangleById(currentId).updateProperties();
             point = new Point(x, y);
 
