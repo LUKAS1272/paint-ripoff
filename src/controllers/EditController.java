@@ -3,6 +3,7 @@ package controllers;
 import models.Line;
 import models.Point;
 import models.canvases.LineCanvas;
+import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
 
 public class EditController {
@@ -68,6 +69,9 @@ public class EditController {
 
                 for (String object : RasterBuffer.getInstance().getBuffer(x, y)) {
                     if (object.startsWith("R")) {
+                        int rectangleId = Integer.parseInt(object.substring(1));
+                        if (!RectangleCanvas.getInstance().getRectangleById(rectangleId).getEditable()) { continue; }
+
                         closestObject = object;
                         closestDistance = currentPixelDistance;
                         break;
@@ -75,10 +79,6 @@ public class EditController {
                 }
             }
         }
-
-        System.out.println(closestDistance);
-        System.out.println(closestObject);
-        System.out.println("...");
 
         // TODO: Find the closest Circle
 

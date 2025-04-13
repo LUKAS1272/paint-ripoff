@@ -11,6 +11,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Rectangle {
+    private boolean editable = true;
+
     private ArrayList<Point> points = new ArrayList<>();
     private Color color;
     private int thickness;
@@ -94,4 +96,8 @@ public class Rectangle {
 
         return lines;
     }
+
+    public void disable() { editable = false; }
+
+    public boolean getEditable() { return editable; }
 }

@@ -34,6 +34,15 @@ public class RectangleCanvas {
         return null;
     }
 
+    public void disableRectangleById(int id) {
+        for (Rectangle rectangle : rectangles) {
+            if (rectangle.getId() == id) {
+                rectangle.disable();
+                return;
+            }
+        }
+    }
+
     public void editRectangleById(Point firstPoint, Point secondPoint, int id) {
         Rectangle rectangleToEdit = getRectangleById(id);
         rectangles.remove(rectangleToEdit);

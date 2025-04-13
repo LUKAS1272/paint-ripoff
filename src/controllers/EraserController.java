@@ -4,6 +4,7 @@ import enums.ActionType;
 import fillers.BasicFiller;
 import models.Point;
 import models.canvases.LineCanvas;
+import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
 import stores.StateStore;
 import utilities.Renderer;
@@ -44,6 +45,7 @@ public class EraserController {
 
                         switch (objectType) {
                             case Line -> LineCanvas.getInstance().disableLineById(objectId);
+                            case Rectangle -> RectangleCanvas.getInstance().disableRectangleById(objectId);
                         }
                     }
 
