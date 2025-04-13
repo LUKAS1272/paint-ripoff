@@ -3,6 +3,7 @@ package controllers;
 import models.Circle;
 import models.Point;
 import models.canvases.CircleCanvas;
+import utilities.HelperFunctions;
 import utilities.Renderer;
 
 import java.util.ArrayList;
@@ -75,21 +76,11 @@ public class CircleController {
         float furthestPointDistance = 0;
 
         for (Point circlePoint : circlePoints) {
-            if (getDistance(circlePoint, editX, editY) > furthestPointDistance) {
+            if (HelperFunctions.getInstance().getDistance(circlePoint, editX, editY) > furthestPointDistance) {
                 furthestPoint = circlePoint;
-                furthestPointDistance = getDistance(circlePoint, editX, editY);
+                furthestPointDistance = HelperFunctions.getInstance().getDistance(circlePoint, editX, editY);
             }
         }
         point = furthestPoint;
-    }
-
-    private float getDistance(Point p, int x, int y) {
-        int px = p.getX();
-        int py = p.getY();
-
-        int xDiff = Math.abs(px - x);
-        int yDiff = Math.abs(py - y);
-
-        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }

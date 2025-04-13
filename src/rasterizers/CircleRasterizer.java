@@ -2,10 +2,10 @@ package rasterizers;
 
 import enums.ActionType;
 import models.Circle;
-import models.Point;
 import rasters.Raster;
 import rasters.RasterBuffer;
 import utilities.Frame;
+import utilities.HelperFunctions;
 
 public class CircleRasterizer {
     private static CircleRasterizer instance;
@@ -34,21 +34,11 @@ public class CircleRasterizer {
 
         for (int y = startY; y <= endY; y++) {
             for (int x = startX; x <= endX; x++) {
-                if (getDistance(circle.getCenter(), x, y) <= radius && getDistance(circle.getCenter(), x, y) >= circle.getRadius() - (float) circle.getThickness() / 2) {
+                if (HelperFunctions.getInstance().getDistance(circle.getCenter(), x, y) <= radius && HelperFunctions.getInstance().getDistance(circle.getCenter(), x, y) >= circle.getRadius() - (float) circle.getThickness() / 2) {
                     String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Circle, circle.getId());
                     RasterBuffer.getInstance().setPixel(x, y, targetBuffer, removeMode);
                 }
             }
         }
-    }
-
-    private float getDistance(Point p, int x, int y) {
-        int px = p.getX();
-        int py = p.getY();
-
-        int xDiff = Math.abs(px - x);
-        int yDiff = Math.abs(py - y);
-
-        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }

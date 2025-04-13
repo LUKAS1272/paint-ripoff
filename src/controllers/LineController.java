@@ -1,6 +1,5 @@
 package controllers;
 
-import rasterizers.TrivialLineRasterizer;
 import stores.EnumStore;
 import models.Point;
 import models.Line;
@@ -83,15 +82,5 @@ public class LineController {
 
             Frame.getInstance().getPanel().repaint(); // Update the canvas
         }
-    }
-
-    private float getDistance(Point p, int x, int y) {
-        int px = p.getX();
-        int py = p.getY();
-
-        int xDiff = Math.abs(px - x);
-        int yDiff = Math.abs(py - y);
-
-        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }

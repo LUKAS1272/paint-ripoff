@@ -9,6 +9,7 @@ import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
 import stores.StateStore;
+import utilities.HelperFunctions;
 import utilities.Renderer;
 
 public class EraserController {
@@ -38,7 +39,7 @@ public class EraserController {
 
         for (int y = startY; y <= endY; y++) {
             for (int x = startX; x <= endX; x++) {
-                if (getDistance(new Point(pointX, pointY), x, y) <= eraseRadius) {
+                if (HelperFunctions.getInstance().getDistance(new Point(pointX, pointY), x, y) <= eraseRadius) {
                     for (String object : RasterBuffer.getInstance().getBuffer(x, y)) {
                         ActionType objectType = RasterBuffer.getInstance().getActionTypeFromBufferId(object);
                         int objectId = RasterBuffer.getInstance().getObjectIdFromBufferId(object);
@@ -58,15 +59,5 @@ public class EraserController {
         }
 
         Renderer.getInstance().rerender();
-    }
-
-    private float getDistance(Point p, int x, int y) {
-        int px = p.getX();
-        int py = p.getY();
-
-        int xDiff = Math.abs(px - x);
-        int yDiff = Math.abs(py - y);
-
-        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }

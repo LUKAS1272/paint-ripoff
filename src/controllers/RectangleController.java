@@ -5,6 +5,7 @@ import models.Point;
 import models.Rectangle;
 import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
+import utilities.HelperFunctions;
 import utilities.Renderer;
 
 public class RectangleController {
@@ -65,21 +66,11 @@ public class RectangleController {
         Point furthestPoint = null;
         float furthestPointDistance = 0;
         for (Point rectanglePoint : editedRectangle.getPoints()) {
-            if (getDistance(rectanglePoint, editX, editY) > furthestPointDistance) {
+            if (HelperFunctions.getInstance().getDistance(rectanglePoint, editX, editY) > furthestPointDistance) {
                 furthestPoint = rectanglePoint;
-                furthestPointDistance = getDistance(rectanglePoint, editX, editY);
+                furthestPointDistance = HelperFunctions.getInstance().getDistance(rectanglePoint, editX, editY);
             }
         }
         point = furthestPoint;
-    }
-
-    private float getDistance(Point p, int x, int y) {
-        int px = p.getX();
-        int py = p.getY();
-
-        int xDiff = Math.abs(px - x);
-        int yDiff = Math.abs(py - y);
-
-        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }
