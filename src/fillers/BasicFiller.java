@@ -34,6 +34,10 @@ public class BasicFiller {
         return colorCanvas[x][y] == 0 ? Frame.getInstance().getBackgroundColor() : colorCanvas[x][y];
     }
 
+    public void setBackgroundPixelColor(int x, int y, int color) {
+        colorCanvas[x][y] = color;
+    }
+
     public void clearColorCanvas() {  colorCanvas = new int[raster.getWidth()][raster.getHeight()]; }
 
     public void fill(Point click) {

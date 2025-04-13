@@ -1,23 +1,13 @@
 package adapters;
 
-import controllers.CircleController;
-import controllers.LineController;
-import controllers.PolygonController;
-import controllers.RectangleController;
-import models.canvases.CircleCanvas;
-import models.canvases.RectangleCanvas;
-import rasters.RasterBuffer;
+import controllers.*;
 import stores.EnumStore;
 import fillers.BasicFiller;
-import stores.StateStore;
 import utilities.Frame;
 import models.Point;
-import utilities.Renderer;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Mouse {
     // Singleton functions
@@ -71,6 +61,10 @@ public class Mouse {
                                     .getInstance()
                                     .createCircle(e.getX(), e.getY());
                             break;
+                        case Eraser:
+                            EraserController
+                                    .getInstance()
+                                    .erase(e.getX(), e.getY());
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) { // Middle or right click
                     LineController.getInstance().MoveLineClick(e.getX(), e.getY());
@@ -115,6 +109,10 @@ public class Mouse {
                                 .getInstance()
                                 .createCircle(e.getX(), e.getY());
                         break;
+                    case Eraser:
+                        EraserController
+                                .getInstance()
+                                .erase(e.getX(), e.getY());
                 }
             }
         };

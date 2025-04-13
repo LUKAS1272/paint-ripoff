@@ -40,6 +40,11 @@ public class RasterBuffer {
         }
     }
 
+    public void clear(int x, int y) {
+        buffer.remove(x + ";" + y);
+        Frame.getInstance().getRaster().setPixel(x, y, getTopLayerColor(x, y));
+    }
+
     public void removeFromBuffer(int x, int y, String targetBuffer) {
         ArrayList<String> currentBuffer = getBuffer(x, y);
         currentBuffer.remove(targetBuffer); // Remove the object
@@ -64,10 +69,10 @@ public class RasterBuffer {
     public int getTopLayerColor(int x, int y) {
         String topLayer = getTopLayer(x, y);
 
-        if (topLayer.length() != 2) { return BasicFiller.getInstance().getBackgroundPixelColor(x, y); }
+        if (topLayer.length() < 2) { return BasicFiller.getInstance().getBackgroundPixelColor(x, y); }
 
         char objectType = topLayer.charAt(0);
-        int objectId = Integer.parseInt(topLayer.substring(1, 2));
+        int objectId = Integer.parseInt(topLayer.substring(1));
 
         return switch (objectType) {
             case 'L' -> LineCanvas.getInstance().getLineById(objectId).getColor().getRGB();
@@ -96,6 +101,26 @@ public class RasterBuffer {
                 addToBuffer(x, y, targetBuffer);
             }
         }
+    }
+
+    public ActionType getActionTypeFromBufferId(String bufferId) {
+        if (bufferId.length() < 2) { return null; }
+
+        char objectType = bufferId.charAt(0);
+
+        return switch (objectType) {
+            case 'L' -> ActionType.Line;
+            case 'P' -> ActionType.Polygon;
+            case 'R' -> ActionType.Rectangle;
+            case 'C' -> ActionType.Circle;
+            default -> null;
+        };
+    }
+
+    public int getObjectIdFromBufferId(String bufferId) {
+        if (bufferId.length() < 2) { return -1; }
+
+        return Integer.parseInt(bufferId.substring(1));
     }
 
     public String buildBufferId(ActionType objectType, int id) {

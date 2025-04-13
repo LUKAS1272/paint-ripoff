@@ -63,6 +63,11 @@ public class LineController {
 
         int index = 0;
         for (Line line : LineCanvas.getInstance().getLines()) {
+            if (!line.getEditable()) {
+                index++;
+                continue;
+            }
+
             float distanceP1 = getDistance(line.getPoint1(), x, y); // Calculates distance from first point of the line
             float distanceP2 = getDistance(line.getPoint2(), x, y); // Calculates distance from the second point of the line
 

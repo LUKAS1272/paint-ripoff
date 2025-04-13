@@ -6,6 +6,8 @@ import enums.LineType;
 import java.awt.Color;
 
 public class Line {
+    private boolean editable = true;
+
     private Point point1;
     private Point point2;
     private Color color;
@@ -47,4 +49,8 @@ public class Line {
     public int getThickness() { return thickness; }
 
     public int getId() { return id; }
+
+    public void disable() { editable = false; }
+
+    public boolean getEditable() { return editable; }
 }

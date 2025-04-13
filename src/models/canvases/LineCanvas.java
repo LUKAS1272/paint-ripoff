@@ -37,6 +37,15 @@ public class LineCanvas {
         return null;
     }
 
+    public void disableLineById(int id) {
+        for (Line line : lines) {
+            if (line.getId() == id) {
+                line.disable();
+                return;
+            }
+        }
+    }
+
     public void editLineById(int id, Line newLine) {
         lines.remove(getLineById(id));
         lines.add(newLine);
