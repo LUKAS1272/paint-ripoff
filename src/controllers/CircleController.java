@@ -5,6 +5,8 @@ import models.Point;
 import models.canvases.CircleCanvas;
 import utilities.Renderer;
 
+import java.util.ArrayList;
+
 public class CircleController {
     private static CircleController instance;
 
@@ -42,16 +44,52 @@ public class CircleController {
             CircleCanvas.getInstance().addCircle(circle); // Add currently drawn circle to the canvas
         } else {
             CircleCanvas.getInstance().getCircleById(currentId).updateProperties();
-            point = new Point(x, y);
+            Point point2 = new Point(x, y);
 
             Circle oldCircle = CircleCanvas.getInstance().getCircleById(currentId);
             Renderer.getInstance().renderCircle(oldCircle, true); // Remove
 
-            CircleCanvas.getInstance().editCircleById(point, currentId);
+            CircleCanvas.getInstance().editCircleById(point, point2, currentId);
             Circle newCircle = CircleCanvas.getInstance().getCircleById(currentId);
             Renderer.getInstance().renderCircle(newCircle, false); // Add
 
             Renderer.getInstance().rerender();
         }
+    }
+
+    public void edit(String object, int editX, int editY) {
+        currentId = Integer.parseInt(object.substring(1));
+
+        Circle editedCircle = CircleCanvas.getInstance().getCircleById(currentId);
+
+        Point center = editedCircle.getCenter();
+        int radius = editedCircle.getRadius();
+
+        ArrayList<Point> circlePoints = new ArrayList<>();
+        circlePoints.add(new Point(center.getX() + radius, center.getY() + radius));
+        circlePoints.add(new Point(center.getX() + radius, center.getY() - radius));
+        circlePoints.add(new Point(center.getX() - radius, center.getY() + radius));
+        circlePoints.add(new Point(center.getX() - radius, center.getY() - radius));
+
+        Point furthestPoint = null;
+        float furthestPointDistance = 0;
+
+        for (Point circlePoint : circlePoints) {
+            if (getDistance(circlePoint, editX, editY) > furthestPointDistance) {
+                furthestPoint = circlePoint;
+                furthestPointDistance = getDistance(circlePoint, editX, editY);
+            }
+        }
+        point = furthestPoint;
+    }
+
+    private float getDistance(Point p, int x, int y) {
+        int px = p.getX();
+        int py = p.getY();
+
+        int xDiff = Math.abs(px - x);
+        int yDiff = Math.abs(py - y);
+
+        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }

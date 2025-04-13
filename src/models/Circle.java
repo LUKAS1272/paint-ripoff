@@ -8,6 +8,8 @@ import utilities.Renderer;
 import java.awt.*;
 
 public class Circle {
+    private boolean editable = true;
+
     private Point center;
     private int radius;
 
@@ -23,11 +25,10 @@ public class Circle {
         this.firstPoint = firstPoint;
         this.color = EnumStore.getInstance().getDrawColor();
         this.id = id;
-        editCircle(secondPoint);
+        editCircle(firstPoint, secondPoint);
     }
 
-    public void editCircle(Point secondCirclePoint) {
-        secondPoint = secondCirclePoint;
+    public void editCircle(Point firstPoint, Point secondPoint) {
         this.thickness = StateStore.getInstance().getThickness();
 
         int xDiff = secondPoint.getX() - firstPoint.getX();
@@ -62,4 +63,8 @@ public class Circle {
     }
 
     public int getId() { return this.id; }
+
+    public void disable() { editable = false; }
+
+    public boolean getEditable() { return editable; }
 }

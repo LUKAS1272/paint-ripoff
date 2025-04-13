@@ -23,10 +23,10 @@ public class CircleCanvas {
         this.circles.add(circle);
     }
 
-    public void editCircleById(Point newPoint, int id) {
+    public void editCircleById(Point firstPoint, Point secondPoint, int id) {
         Circle circleToEdit = getCircleById(id);
         circles.remove(circleToEdit);
-        circleToEdit.editCircle(newPoint);
+        circleToEdit.editCircle(firstPoint, secondPoint);
         circles.add(circleToEdit);
     }
 
@@ -37,6 +37,15 @@ public class CircleCanvas {
             }
         }
         return null;
+    }
+
+    public void disableCircleById(int id) {
+        for (Circle circle : circles) {
+            if (circle.getId() == id) {
+                circle.disable();
+                return;
+            }
+        }
     }
 
     public void clearCircles() { this.circles.clear(); }
