@@ -2,7 +2,9 @@ package controllers;
 
 import models.Line;
 import models.Point;
+import models.Polygon;
 import models.canvases.LineCanvas;
+import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
 
@@ -53,7 +55,19 @@ public class EditController {
             }
         }
 
-        // TODO: Find the closest Polygon
+        // Find the closest Polygon
+        for (Polygon polygon : PolygonCanvas.getInstance().getPolygons()) {
+            if (!polygon.getEditable()) { continue; }
+
+            int pointIndex = 0;
+            for (Point polygonPoint : polygon.getPoints()) {
+                if (getDistance(polygonPoint, pointX, pointY) < closestDistance) {
+                    closestDistance = getDistance(polygonPoint, pointX, pointY);
+                    closestObject = "P" + polygon.getId() + ";" + pointIndex;
+                }
+                pointIndex++;
+            }
+        }
 
         // Find the closest Rectangle
         int startY = pointY - 30;
@@ -90,6 +104,9 @@ public class EditController {
             case Line:
                 LineController.getInstance().edit(closestObject);
                 break;
+            case Polygon:
+                PolygonController.getInstance().edit(closestObject);
+                break;
             case Rectangle:
                 RectangleController.getInstance().edit(closestObject, pointX, pointY);
                 break;
@@ -102,6 +119,9 @@ public class EditController {
         switch (RasterBuffer.getInstance().getActionTypeFromBufferId(closestObject)) {
             case Line:
                 LineController.getInstance().MoveLineDrag(x, y);
+                break;
+            case Polygon:
+                PolygonController.getInstance().updatePolygon(x, y);
                 break;
             case Rectangle:
                 RectangleController.getInstance().createRectangle(x, y);

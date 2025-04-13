@@ -4,12 +4,11 @@ import enums.ActionType;
 import fillers.BasicFiller;
 import models.Point;
 import models.canvases.LineCanvas;
+import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
 import stores.StateStore;
 import utilities.Renderer;
-
-import java.util.ArrayList;
 
 public class EraserController {
     private static EraserController instance;
@@ -46,6 +45,7 @@ public class EraserController {
                         switch (objectType) {
                             case Line -> LineCanvas.getInstance().disableLineById(objectId);
                             case Rectangle -> RectangleCanvas.getInstance().disableRectangleById(objectId);
+                            case Polygon -> PolygonCanvas.getInstance().disablePolygonById(objectId);
                         }
                     }
 

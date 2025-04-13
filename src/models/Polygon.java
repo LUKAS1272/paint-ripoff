@@ -11,6 +11,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class Polygon {
+    private boolean editable = true;
+
     private ArrayList<Point> points = new ArrayList<>();
     private Color color;
     private int thickness;
@@ -64,4 +66,21 @@ public class Polygon {
     }
 
     public int getId() { return id; }
+
+    public void disable() { editable = false; }
+
+    public boolean getEditable() { return editable; }
+
+    public void editPoint(int index, int x, int y) {
+        ArrayList<Point> oldPoints = getPoints();
+        points = new ArrayList<>();
+
+        for (int i = 0; i < oldPoints.size(); i++) {
+            if (i == index) {
+                addPoint(new Point(x, y));
+            } else {
+                addPoint(oldPoints.get(i));
+            }
+        }
+    }
 }

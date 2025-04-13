@@ -42,6 +42,15 @@ public class PolygonCanvas {
         return null;
     }
 
+    public void disablePolygonById(int id) {
+        for (Polygon polygon : polygons) {
+            if (polygon.getId() == id) {
+                polygon.disable();
+                return;
+            }
+        }
+    }
+
     public ArrayList<Polygon> getPolygons() {
         return polygons;
     }

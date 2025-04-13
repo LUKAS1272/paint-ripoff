@@ -1,7 +1,6 @@
 package controllers;
 
 import enums.ActionType;
-import models.Line;
 import models.Point;
 import models.Polygon;
 import models.canvases.PolygonCanvas;
@@ -9,9 +8,6 @@ import rasters.RasterBuffer;
 import stores.EnumStore;
 import stores.StateStore;
 import utilities.Renderer;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 public class PolygonController {
     private static PolygonController instance;
@@ -31,9 +27,11 @@ public class PolygonController {
     // --------------------------------------------
 
     private Point point;
+    int editedPointIndex = -1;
 
     public void clearPoint() {
         point = null;
+        editedPointIndex = -1;
     }
 
     public void createPolygon(int x, int y) {
@@ -55,5 +53,27 @@ public class PolygonController {
 
             Renderer.getInstance().rerender();
         }
+    }
+
+    public void edit(String object) {
+        String[] identifiers = object.substring(1).split(";");
+
+        currentId = Integer.parseInt(identifiers[0]);
+        editedPointIndex = Integer.parseInt(identifiers[1]);
+    }
+
+    public void updatePolygon(int x, int y) {
+        if (editedPointIndex < 0) { return; }
+
+        PolygonCanvas.getInstance().getPolygonById(currentId).updateProperties();
+
+        Polygon oldPolygon = PolygonCanvas.getInstance().getPolygonById(currentId);
+        Renderer.getInstance().renderLines(oldPolygon.getLines(), true, RasterBuffer.getInstance().buildBufferId(ActionType.Polygon, currentId)); // Remove
+
+        PolygonCanvas.getInstance().getPolygonById(currentId).editPoint(editedPointIndex, x, y);
+        Polygon newPolygon = PolygonCanvas.getInstance().getPolygonById(currentId);
+        Renderer.getInstance().renderLines(newPolygon.getLines(), false, RasterBuffer.getInstance().buildBufferId(ActionType.Polygon, currentId)); // Add
+
+        Renderer.getInstance().rerender();
     }
 }
