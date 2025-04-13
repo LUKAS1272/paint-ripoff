@@ -3,6 +3,7 @@ package controllers;
 import enums.ActionType;
 import fillers.BasicFiller;
 import models.Point;
+import models.canvases.CircleCanvas;
 import models.canvases.LineCanvas;
 import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
@@ -46,6 +47,7 @@ public class EraserController {
                             case Line -> LineCanvas.getInstance().disableLineById(objectId);
                             case Rectangle -> RectangleCanvas.getInstance().disableRectangleById(objectId);
                             case Polygon -> PolygonCanvas.getInstance().disablePolygonById(objectId);
+                            case Circle -> CircleCanvas.getInstance().disableCircleById(objectId);
                         }
                     }
 

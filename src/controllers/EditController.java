@@ -3,6 +3,7 @@ package controllers;
 import models.Line;
 import models.Point;
 import models.Polygon;
+import models.canvases.CircleCanvas;
 import models.canvases.LineCanvas;
 import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
@@ -69,7 +70,7 @@ public class EditController {
             }
         }
 
-        // Find the closest Rectangle
+        // Find the closest Rectangle / Circle
         int startY = pointY - 30;
         int startX = pointX - 30;
 
@@ -90,11 +91,18 @@ public class EditController {
                         closestDistance = currentPixelDistance;
                         break;
                     }
+
+                    if (object.startsWith("C")) {
+                        int circleId = Integer.parseInt(object.substring(1));
+                        if (!CircleCanvas.getInstance().getCircleById(circleId).getEditable()) { continue; }
+
+                        closestObject = object;
+                        closestDistance = currentPixelDistance;
+                        break;
+                    }
                 }
             }
         }
-
-        // TODO: Find the closest Circle
 
         if (closestDistance > tolerance) {
             return;
@@ -109,6 +117,9 @@ public class EditController {
                 break;
             case Rectangle:
                 RectangleController.getInstance().edit(closestObject, pointX, pointY);
+                break;
+            case Circle:
+                CircleController.getInstance().edit(closestObject, pointX, pointY);
                 break;
         }
     }
@@ -125,6 +136,9 @@ public class EditController {
                 break;
             case Rectangle:
                 RectangleController.getInstance().createRectangle(x, y);
+                break;
+            case Circle:
+                CircleController.getInstance().createCircle(x, y);
                 break;
         }
     }
