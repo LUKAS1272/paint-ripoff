@@ -34,10 +34,10 @@ public class RectangleCanvas {
         return null;
     }
 
-    public void editRectangleById(Point newPoint, int id) {
+    public void editRectangleById(Point firstPoint, Point secondPoint, int id) {
         Rectangle rectangleToEdit = getRectangleById(id);
         rectangles.remove(rectangleToEdit);
-        rectangleToEdit.createFromTwoPoints(newPoint);
+        rectangleToEdit.createFromTwoPoints(firstPoint, secondPoint);
         rectangles.add(rectangleToEdit);
     }
 }

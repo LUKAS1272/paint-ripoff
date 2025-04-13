@@ -23,7 +23,7 @@ public class Rectangle {
         this.id = id;
         this.lineType = EnumStore.getInstance().lineType;
         addPoint(firstPoint);
-        createFromTwoPoints(secondPoint);
+        createFromTwoPoints(firstPoint, secondPoint);
     }
 
     public void updateProperties() {
@@ -41,11 +41,10 @@ public class Rectangle {
 
     public int getId() { return id; }
 
-    public void createFromTwoPoints(Point secondPoint) {
+    public void createFromTwoPoints(Point firstPoint, Point secondPoint) {
         thickness = StateStore.getInstance().getThickness(); // Updates the thickness of the object
         alignment = EnumStore.getInstance().alignment; // Updates the alignment (rectangle / square)
 
-        Point firstPoint = points.getFirst();
         points.clear();
         addPoint(firstPoint); // First point is the same everywhere
 
@@ -76,6 +75,8 @@ public class Rectangle {
     public void addPoint(Point point) { this.points.add(point); }
 
     public Color getColor() { return color; }
+
+    public ArrayList<Point> getPoints() { return points; }
 
     public ArrayList<Line> getLines() {
         ArrayList<Line> lines = new ArrayList<>();

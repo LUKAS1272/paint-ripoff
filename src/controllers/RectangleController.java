@@ -44,16 +44,42 @@ public class RectangleController {
             RectangleCanvas.getInstance().addRectangle(rectangle); // Add currently drawn rectangle to the canvas
         } else {
             RectangleCanvas.getInstance().getRectangleById(currentId).updateProperties();
-            point = new Point(x, y);
+            Point point2 = new Point(x, y);
 
             Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
             Renderer.getInstance().renderLines(oldRectangle.getLines(), true, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Remove
 
-            RectangleCanvas.getInstance().editRectangleById(point, currentId);
+            RectangleCanvas.getInstance().editRectangleById(point, point2, currentId);
             Rectangle newRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
             Renderer.getInstance().renderLines(newRectangle.getLines(), false, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Add
 
             Renderer.getInstance().rerender();
         }
+    }
+
+    public void edit(String object, int editX, int editY) {
+        currentId = Integer.parseInt(object.substring(1));
+
+        Rectangle editedRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
+
+        Point furthestPoint = null;
+        float furthestPointDistance = 0;
+        for (Point rectanglePoint : editedRectangle.getPoints()) {
+            if (getDistance(rectanglePoint, editX, editY) > furthestPointDistance) {
+                furthestPoint = rectanglePoint;
+                furthestPointDistance = getDistance(rectanglePoint, editX, editY);
+            }
+        }
+        point = furthestPoint;
+    }
+
+    private float getDistance(Point p, int x, int y) {
+        int px = p.getX();
+        int py = p.getY();
+
+        int xDiff = Math.abs(px - x);
+        int yDiff = Math.abs(py - y);
+
+        return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 }

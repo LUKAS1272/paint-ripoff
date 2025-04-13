@@ -34,40 +34,42 @@ public class Mouse {
         mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) { // Left click
-                    switch (EnumStore.getInstance().actionType) {
-                        case Line:
-                            LineController
-                                    .getInstance()
-                                    .createNewLine(e.getX(), e.getY());
-                            break;
-                        case Polygon:
-                            PolygonController
-                                    .getInstance()
-                                    .createPolygon(e.getX(), e.getY());
-                            break;
-                        case Fill:
-                            BasicFiller
-                                    .getInstance()
-                                    .fill(new Point(e.getX(), e.getY()));
-                            break;
-                        case Rectangle:
-                            RectangleController
-                                    .getInstance()
-                                    .createRectangle(e.getX(), e.getY());
-                            break;
-                        case Circle:
-                            CircleController
-                                    .getInstance()
-                                    .createCircle(e.getX(), e.getY());
-                            break;
-                        case Eraser:
-                            EraserController
-                                    .getInstance()
-                                    .erase(e.getX(), e.getY());
-                    }
-                } else if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) { // Middle or right click
-                    LineController.getInstance().MoveLineClick(e.getX(), e.getY());
+                switch (EnumStore.getInstance().actionType) {
+                    case Line:
+                        LineController
+                                .getInstance()
+                                .createNewLine(e.getX(), e.getY());
+                        break;
+                    case Polygon:
+                        PolygonController
+                                .getInstance()
+                                .createPolygon(e.getX(), e.getY());
+                        break;
+                    case Fill:
+                        BasicFiller
+                                .getInstance()
+                                .fill(new Point(e.getX(), e.getY()));
+                        break;
+                    case Rectangle:
+                        RectangleController
+                                .getInstance()
+                                .createRectangle(e.getX(), e.getY());
+                        break;
+                    case Circle:
+                        CircleController
+                                .getInstance()
+                                .createCircle(e.getX(), e.getY());
+                        break;
+                    case Eraser:
+                        EraserController
+                                .getInstance()
+                                .erase(e.getX(), e.getY());
+                        break;
+                    case Edit:
+                        EditController
+                                .getInstance()
+                                .edit(e.getX(), e.getY());
+                        break;
                 }
             }
 
@@ -88,6 +90,11 @@ public class Mouse {
                         CircleController
                                 .getInstance()
                                 .clearPoint();
+                        break;
+                    case Edit:
+                        EditController
+                                .getInstance()
+                                .clear();
                         break;
                 }
             }
@@ -113,6 +120,12 @@ public class Mouse {
                         EraserController
                                 .getInstance()
                                 .erase(e.getX(), e.getY());
+                        break;
+                    case Edit:
+                        EditController
+                                .getInstance()
+                                .editAction(e.getX(), e.getY());
+                        break;
                 }
             }
         };

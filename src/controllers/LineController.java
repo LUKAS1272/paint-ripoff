@@ -50,45 +50,23 @@ public class LineController {
     }
 
     // ------------------------------------------
-    // MoveLine
-       int tolerance = 30;
-    // ------------------------------------------
 
-    public void MoveLineClick(int x, int y) {
-        point = null; // Nullify point to prevent issues
-        
-        int closestLineIndex = -1;
-        Point otherPoint = null; // Second point of the closest line
-        float closestDistance = Float.MAX_VALUE;
+    public void edit(String object) {
+        String[] identifiers = object.substring(1).split(";");
 
-        int index = 0;
-        for (Line line : LineCanvas.getInstance().getLines()) {
-            if (!line.getEditable()) {
-                index++;
-                continue;
-            }
+        int lineId = Integer.parseInt(identifiers[0]);
+        Line editedLine = LineCanvas.getInstance().getLineById(lineId);
 
-            float distanceP1 = getDistance(line.getPoint1(), x, y); // Calculates distance from first point of the line
-            float distanceP2 = getDistance(line.getPoint2(), x, y); // Calculates distance from the second point of the line
+        int pointId = Integer.parseInt(identifiers[1]);
 
-            if (distanceP1 < closestDistance) {
-                otherPoint = line.getPoint2();
-                closestDistance = distanceP1;
-                closestLineIndex = index;
-            }
-
-            if (distanceP2 < closestDistance) {
-                otherPoint = line.getPoint1();
-                closestDistance = distanceP2;
-                closestLineIndex = index;
-            }
-
-            index++;
-        }
-
-        if (closestDistance <= tolerance) { // If the closest point is within tolerance
-            point = new Point(otherPoint.getX(), otherPoint.getY());
-            currentId = LineCanvas.getInstance().getLines().get(closestLineIndex).getId();
+        currentId = lineId;
+        if (pointId == 1) {
+            point = editedLine.getPoint2();
+        } else if (pointId == 2) {
+            point = editedLine.getPoint1();
+        } else {
+            point = null;
+            currentId = -1;
         }
     }
 
