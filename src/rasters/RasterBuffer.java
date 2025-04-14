@@ -36,7 +36,7 @@ public class RasterBuffer {
         if (!currentBuffer.contains(targetBuffer)) { // If the object isn't part of the buffer on these cords yet
             currentBuffer.add(targetBuffer); // Add the object to the buffer
             buffer.put(x + ";" + y, currentBuffer); // Update the buffer
-            Frame.getInstance().getRaster().setPixel(x, y, EnumStore.getInstance().getDrawColor().getRGB());
+            Frame.getInstance().getRaster().setPixel(x, y, getTopLayerColor(x, y));
         }
     }
 
