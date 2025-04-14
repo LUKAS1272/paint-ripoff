@@ -29,7 +29,7 @@ public class EditController {
     private String closestObject = "";
 
     public void edit(int pointX, int pointY) {
-        closestObject = HelperFunctions.getInstance().getClosestObject(pointX, pointY);
+        closestObject = HelperFunctions.getInstance().getClosestObject(pointX, pointY, true);
 
         switch (RasterBuffer.getInstance().getActionTypeFromBufferId(closestObject)) {
             case Line:

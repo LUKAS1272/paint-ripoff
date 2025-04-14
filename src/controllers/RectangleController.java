@@ -73,4 +73,12 @@ public class RectangleController {
         }
         point = furthestPoint;
     }
+
+    public void changePointsOf(int id, int xDiff, int yDiff) {
+        Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(id);
+        Renderer.getInstance().renderLines(oldRectangle.getLines(), true, "R" + id); // Remove
+
+        oldRectangle.alterPoints(xDiff, yDiff);
+        Renderer.getInstance().renderLines(oldRectangle.getLines(), false, "R" + id); // Add
+    }
 }

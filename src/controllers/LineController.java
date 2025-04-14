@@ -83,4 +83,12 @@ public class LineController {
             Frame.getInstance().getPanel().repaint(); // Update the canvas
         }
     }
+
+    public void changePointsOf(int id, int xDiff, int yDiff) {
+        Line oldLine = LineCanvas.getInstance().getLineById(id);
+        Renderer.getInstance().renderLine(oldLine, true, null);
+
+        oldLine.alterPoints(xDiff, yDiff);
+        Renderer.getInstance().renderLine(oldLine, false, null);
+    }
 }

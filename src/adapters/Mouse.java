@@ -65,6 +65,11 @@ public class Mouse {
                                 .getInstance()
                                 .erase(e.getX(), e.getY());
                         break;
+                    case Hand:
+                        HandController
+                                .getInstance()
+                                .pick(e.getX(), e.getY());
+                        break;
                     case Edit:
                         EditController
                                 .getInstance()
@@ -88,6 +93,11 @@ public class Mouse {
                         break;
                     case Circle:
                         CircleController
+                                .getInstance()
+                                .clearPoint();
+                        break;
+                    case Hand:
+                        HandController
                                 .getInstance()
                                 .clearPoint();
                         break;
@@ -120,6 +130,11 @@ public class Mouse {
                         EraserController
                                 .getInstance()
                                 .erase(e.getX(), e.getY());
+                        break;
+                    case Hand:
+                        HandController
+                                .getInstance()
+                                .move(e.getX(), e.getY());
                         break;
                     case Edit:
                         EditController

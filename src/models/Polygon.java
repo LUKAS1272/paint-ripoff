@@ -83,4 +83,15 @@ public class Polygon {
             }
         }
     }
+
+    public void alterPoints(int xDiff, int yDiff) {
+        ArrayList<Point> newPoints = new ArrayList<>();
+
+        for (Point point : points) {
+            Point newPoint = new Point(point.getX() + xDiff, point.getY() + yDiff);
+            newPoints.add(newPoint);
+        }
+
+        points = newPoints;
+    }
 }

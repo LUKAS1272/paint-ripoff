@@ -43,6 +43,8 @@ public class Circle {
         center = new Point(firstPoint.getX() + radius * xSign, firstPoint.getY() + radius * ySign); // Create a center point (first point + directed radius on both axis)
     }
 
+    public void alterCenter(int xDiff, int yDiff) { center = new Point(center.getX() + xDiff, center.getY() + yDiff); }
+
     public int getRadius() { return this.radius; }
 
     public Point getCenter() { return this.center; }

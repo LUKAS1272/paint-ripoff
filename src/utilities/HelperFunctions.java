@@ -33,7 +33,7 @@ public class HelperFunctions {
         return (float) Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
     }
 
-    public String getClosestObject(int pointX, int pointY) {
+    public String getClosestObject(int pointX, int pointY, boolean lookForPoints) {
         String closestObject = "";
         float closestDistance = Float.MAX_VALUE;
         int tolerance = 30;
@@ -83,19 +83,18 @@ public class HelperFunctions {
                 if (currentPixelDistance > closestDistance) { continue; }
 
                 for (String object : RasterBuffer.getInstance().getBuffer(x, y)) {
-                    if (object.startsWith("R")) {
-                        int rectangleId = Integer.parseInt(object.substring(1));
-                        if (!RectangleCanvas.getInstance().getRectangleById(rectangleId).getEditable()) { continue; }
+                    char objectType = object.charAt(0);
+                    int objectId = Integer.parseInt(object.substring(1));
 
-                        closestObject = object;
-                        closestDistance = currentPixelDistance;
-                        break;
-                    }
+                    boolean editable = switch (objectType) {
+                        case 'L' -> !lookForPoints && LineCanvas.getInstance().getLineById(objectId).getEditable();
+                        case 'P' -> !lookForPoints && PolygonCanvas.getInstance().getPolygonById(objectId).getEditable();
+                        case 'R' -> RectangleCanvas.getInstance().getRectangleById(objectId).getEditable();
+                        case 'C' -> CircleCanvas.getInstance().getCircleById(objectId).getEditable();
+                        default -> false;
+                    };
 
-                    if (object.startsWith("C")) {
-                        int circleId = Integer.parseInt(object.substring(1));
-                        if (!CircleCanvas.getInstance().getCircleById(circleId).getEditable()) { continue; }
-
+                    if (editable) {
                         closestObject = object;
                         closestDistance = currentPixelDistance;
                         break;
@@ -104,9 +103,6 @@ public class HelperFunctions {
             }
         }
 
-        if (closestDistance > tolerance) {
-            return "";
-        }
-        return closestObject;
+        return closestDistance > tolerance ? "" : closestObject;
     }
 }

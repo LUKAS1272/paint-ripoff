@@ -53,4 +53,9 @@ public class Line {
     public void disable() { editable = false; }
 
     public boolean getEditable() { return editable; }
+
+    public void alterPoints(int xDiff, int yDiff) {
+        point1 = new Point(point1.getX() + xDiff, point1.getY() + yDiff);
+        point2 = new Point(point2.getX() + xDiff, point2.getY() + yDiff);
+    }
 }

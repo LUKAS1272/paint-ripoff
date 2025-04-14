@@ -83,4 +83,13 @@ public class CircleController {
         }
         point = furthestPoint;
     }
+
+    public void changePointsOf(int id, int xDiff, int yDiff) {
+        Circle oldCircle = CircleCanvas.getInstance().getCircleById(id);
+        Renderer.getInstance().renderCircle(oldCircle, true); // Remove
+
+        oldCircle.alterCenter(xDiff, yDiff);
+        Renderer.getInstance().renderCircle(oldCircle, false); // Add
+        Renderer.getInstance().rerender();
+    }
 }

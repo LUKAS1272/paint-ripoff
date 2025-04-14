@@ -76,4 +76,12 @@ public class PolygonController {
 
         Renderer.getInstance().rerender();
     }
+
+    public void changePointsOf(int id, int xDiff, int yDiff) {
+        Polygon oldPolygon = PolygonCanvas.getInstance().getPolygonById(id);
+        Renderer.getInstance().renderLines(oldPolygon.getLines(), true, "P" + id);
+
+        oldPolygon.alterPoints(xDiff, yDiff);
+        Renderer.getInstance().renderLines(oldPolygon.getLines(), false, "P" + id);
+    }
 }
