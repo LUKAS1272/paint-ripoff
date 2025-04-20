@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] User interface
+- [x] User interface
 - [ ] Code optimization
 - [ ] Code comments
 - [ ] Documentation

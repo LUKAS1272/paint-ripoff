@@ -30,19 +30,6 @@ public class Renderer {
     }
 
     public void rerender()  {
-        for (int x = 0; x < Frame.getInstance().getRaster().getWidth(); x++) {
-            for (int y = 0; y < 50; y++) {
-                Frame.getInstance().getRaster().setPixel(x, y, 0);
-            }
-        }
-
-        Graphics2D g2d = (Graphics2D) Frame.getInstance().getRaster().getGraphics();
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Arial", Font.BOLD, 14));
-
-        g2d.drawString("Mode: " + EnumStore.getInstance().actionType, 10, 20);
-        g2d.drawString("Color: " + EnumStore.getInstance().drawColor, 10, 40);
-
         Frame.getInstance().getPanel().repaint();
     }
 

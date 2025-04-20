@@ -47,6 +47,10 @@ public class EnumStore {
     }
 
     public Color getDrawColor() {
+        return getColor(drawColor);
+    }
+
+    private Color getColor(DrawColor drawColor) {
         return switch (drawColor) {
             case White -> Color.white;
             case Red -> Color.red;

@@ -1,9 +1,4 @@
-import adapters.Keyboard;
 import adapters.Mouse;
-import fillers.BasicFiller;
-import models.canvases.LineCanvas;
-import models.canvases.PolygonCanvas;
-import rasterizers.*;
 import utilities.Frame;
 import utilities.Renderer;
 
@@ -14,7 +9,6 @@ public class App {
 
         // Adds listeners to add dynamic controls
         Mouse.getInstance();
-        Keyboard.getInstance();
 
         // Creates the first render of frame on start
         Renderer.getInstance().rerender();
