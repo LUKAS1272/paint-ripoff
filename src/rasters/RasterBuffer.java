@@ -6,8 +6,8 @@ import models.canvases.CircleCanvas;
 import models.canvases.LineCanvas;
 import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
-import stores.EnumStore;
 import utilities.Frame;
+import utilities.Renderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +43,20 @@ public class RasterBuffer {
     public void clear(int x, int y) {
         buffer.remove(x + ";" + y);
         Frame.getInstance().getRaster().setPixel(x, y, getTopLayerColor(x, y));
+    }
+
+    public void clearCanvas() {
+        buffer = new HashMap<>(); // Clear the objects from buffer
+        BasicFiller.getInstance().clearColorCanvas(); // Clear the background
+
+        // Rerender all points of the canvas
+        for (int x = 0; x < 1920; x++) {
+            for (int y = 0; y < 1080; y++) {
+                Frame.getInstance().getRaster().setPixel(x, y, getTopLayerColor(x, y));
+            }
+        }
+
+        Renderer.getInstance().rerender();
     }
 
     public void removeFromBuffer(int x, int y, String targetBuffer) {

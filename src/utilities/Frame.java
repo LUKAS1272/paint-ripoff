@@ -5,6 +5,7 @@ import enums.Alignment;
 import enums.DrawColor;
 import enums.LineType;
 import rasters.Raster;
+import rasters.RasterBuffer;
 import rasters.RasterBufferedImage;
 import stores.EnumStore;
 import stores.StateStore;
@@ -165,6 +166,20 @@ public class Frame {
             alignments.add(alignmentButton);
         }
         panel.add(alignments);
+
+
+        panel.add(GUI.getInstance().crateLabel("Clear the canvas"));
+        JPanel clearPanel = GUI.getInstance().createPanel();
+
+        JButton clearButton = GUI.getInstance().createButton("Clear", false);
+        clearButton.addActionListener(e -> {
+            RasterBuffer.getInstance().clearCanvas();
+            panel.removeAll();
+            createAndShowGUI();
+        });
+
+        clearPanel.add(clearButton);
+        panel.add(clearPanel);
 
 
         frame.add(panel, BorderLayout.EAST);
