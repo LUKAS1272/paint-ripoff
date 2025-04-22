@@ -2,6 +2,7 @@ package fillers;
 
 import models.Point;
 import rasters.Raster;
+import rasters.RasterBuffer;
 import stores.EnumStore;
 import utilities.Frame;
 import utilities.Renderer;
@@ -80,7 +81,8 @@ public class BasicFiller {
             // If there is not an above seed set yet OR there is a sequence of non-base color
             // AND the seed's Y axis is within the frame
             // AND the seed's pixel's color is baseColor
-            if ((!aboveSeed || nonBaseSequenceAbove) && seedY - 1 >= 0 && raster.getPixel(x, seedY - 1) == baseColor) {
+            // AND the seed's pixel has no objects on it
+            if ((!aboveSeed || nonBaseSequenceAbove) && seedY - 1 >= 0 && raster.getPixel(x, seedY - 1) == baseColor && RasterBuffer.getInstance().getTopLayer(x, seedY - 1) == "") {
                 nextSeeds.push(new Cords(x, seedY - 1)); // Add the pixel above to a queue
                 aboveSeed = true;
                 nonBaseSequenceAbove = false; // Reset the variable
@@ -92,7 +94,8 @@ public class BasicFiller {
             // If there is not a below seed set yet OR there is a sequence of non-base color
             // AND the seed's Y axis is within the frame
             // AND the seed's pixel's color is baseColor
-            if ((!belowSeed || nonBaseSequenceBelow) && seedY + 1 < raster.getHeight() && raster.getPixel(x, seedY + 1) == baseColor) {
+            // AND the seed's pixel has no objects on it
+            if ((!belowSeed || nonBaseSequenceBelow) && seedY + 1 < raster.getHeight() && raster.getPixel(x, seedY + 1) == baseColor && RasterBuffer.getInstance().getTopLayer(x, seedY + 1) == "") {
                 nextSeeds.push(new Cords(x, seedY + 1)); // Add the pixel below to a queue
                 belowSeed = true;
                 nonBaseSequenceBelow = false; // Reset the variable
@@ -101,7 +104,7 @@ public class BasicFiller {
             }
 
             x++; // Move next pixel to the right
-        } while (x < raster.getWidth() && raster.getPixel(x, seedY) == baseColor); // Iterate while the x is within frame range AND current pixel is of base color
+        } while (x < raster.getWidth() && raster.getPixel(x, seedY) == baseColor && RasterBuffer.getInstance().getTopLayer(x, seedY) == ""); // Iterate while the x is within frame range AND current pixel is of base color AND current pixel has no objects on it
 
         x = seedX;
         do { // Traverse to the left
@@ -113,7 +116,8 @@ public class BasicFiller {
             // If there is not an above seed set yet OR there is a sequence of non-base color
             // AND the seed's Y axis is within the frame
             // AND the seed's pixel's color is baseColor
-            if ((!aboveSeed || nonBaseSequenceAbove) && seedY - 1 >= 0 && raster.getPixel(x, seedY - 1) == baseColor) {
+            // AND the seed's pixel has no objects on it
+            if ((!aboveSeed || nonBaseSequenceAbove) && seedY - 1 >= 0 && raster.getPixel(x, seedY - 1) == baseColor && RasterBuffer.getInstance().getTopLayer(x, seedY - 1) == "") {
                 nextSeeds.push(new Cords(x, seedY - 1)); // Add the pixel above to a queue
                 aboveSeed = true;
                 nonBaseSequenceAbove = false; // Reset the variable
@@ -125,7 +129,8 @@ public class BasicFiller {
             // If there is not a below seed set yet OR there is a sequence of non-base color
             // AND the seed's Y axis is within the frame
             // AND the seed's pixel's color is baseColor
-            if ((!belowSeed || nonBaseSequenceBelow) && seedY + 1 < raster.getHeight() && raster.getPixel(x, seedY + 1) == baseColor) {
+            // AND the seed's pixel has no objects on it
+            if ((!belowSeed || nonBaseSequenceBelow) && seedY + 1 < raster.getHeight() && raster.getPixel(x, seedY + 1) == baseColor && RasterBuffer.getInstance().getTopLayer(x, seedY + 1) == "") {
                 nextSeeds.push(new Cords(x, seedY + 1)); // Add the pixel below to a queue
                 belowSeed = true;
                 nonBaseSequenceBelow = false; // Reset the variable
@@ -134,7 +139,7 @@ public class BasicFiller {
             }
 
             x--; // Move next pixel to the left
-        } while (x > 0 && raster.getPixel(x, seedY) == baseColor); // Iterate while the x is within frame range AND current pixel is of base color
+        } while (x > 0 && raster.getPixel(x, seedY) == baseColor && RasterBuffer.getInstance().getTopLayer(x, seedY) == ""); // Iterate while the x is within frame range AND current pixel is of base color AND current pixel has no objects on it
     }
 }
 
