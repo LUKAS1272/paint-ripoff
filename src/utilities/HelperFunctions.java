@@ -1,5 +1,7 @@
 package utilities;
 
+import enums.Alignment;
+import enums.LineType;
 import models.Line;
 import models.Point;
 import models.Polygon;
@@ -8,6 +10,10 @@ import models.canvases.LineCanvas;
 import models.canvases.PolygonCanvas;
 import models.canvases.RectangleCanvas;
 import rasters.RasterBuffer;
+
+import java.awt.*;
+import java.awt.image.AreaAveragingScaleFilter;
+import java.util.ArrayList;
 
 public class HelperFunctions {
     private static HelperFunctions instance;
@@ -112,5 +118,33 @@ public class HelperFunctions {
         }
 
         return closestDistance > tolerance ? "" : closestObject; // If the closestDistance is not within the tolerance, return empty string, otherwise return the closestObject variable
+    }
+
+    public ArrayList<Point> alterPoints(ArrayList<Point> oldPoints, int xDiff, int yDiff) {
+        ArrayList<Point> newPoints = new ArrayList<>(); // Create a list to store new points (after being moved)
+
+        for (Point point : oldPoints) { // Iterate through every point
+            Point newPoint = new Point(point.getX() + xDiff, point.getY() + yDiff);
+            newPoints.add(newPoint); // Add moved point to new points list
+        }
+
+        return newPoints; // Return moved points
+    }
+
+    public ArrayList<Line> getLines(ArrayList<Point> points, Color color, LineType lineType, int thickness) {
+        ArrayList<Line> lines = new ArrayList<>(); // Create a list to store lines
+        if (points.size() < 2) { return lines; } // If there are not at least 2 points to form a line, return empty array
+
+        Point firstPoint, secondPoint;
+
+        for (int i = 1; i <= points.size(); i++) { // Iterate through every possible starting point
+            firstPoint = points.get(i - 1); // Assign starting point
+            secondPoint = points.get(i % points.size()); // Starting point index + 1 (modulo prevents overflowing)
+
+            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned, thickness, -1); // Create a line
+            lines.add(polygonLine); // Add line to the list
+        }
+
+        return lines; // Return generated lines
     }
 }
