@@ -79,7 +79,7 @@ public class Mouse {
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) { // Clearing point on mouseReleased will prevent continuing creating the last object
                 switch (EnumStore.getInstance().actionType) {
                     case Line:
                         LineController

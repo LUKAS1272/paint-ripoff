@@ -1,7 +1,5 @@
 package stores;
 
-import java.awt.*;
-
 public class StateStore {
     private static StateStore instance;
 
@@ -19,25 +17,22 @@ public class StateStore {
     private int maxThickness = 10;
     // --------------------------------------
 
-    public Color lineColor = Color.white;
-    public Color fillColor = Color.green;
-
-    private int thickness = minThickness;
+    private int thickness = minThickness; // Set the starting thickness as the minThickness
 
     public int getThickness() { return thickness; }
 
-    public void increaseThickness() {
+    public void increaseThickness() { // Increase thickness by 1
         thickness++;
 
-        if (thickness > maxThickness) {
+        if (thickness > maxThickness) { // If it is above maxThickness, set it as maxThickness
             thickness = maxThickness;
         }
     }
 
-    public void decreaseThickness() {
+    public void decreaseThickness() { // Decrease thickness by 1
         thickness--;
 
-        if (thickness < minThickness) {
+        if (thickness < minThickness) { // If it is below minThickness set it as minThickness
             thickness = minThickness;
         }
     }

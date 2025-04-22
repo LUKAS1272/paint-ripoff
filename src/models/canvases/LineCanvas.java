@@ -9,9 +9,7 @@ public class LineCanvas {
 
     private ArrayList<Line> lines;
 
-    private LineCanvas() {
-        this.lines = new ArrayList<>();
-    }
+    private LineCanvas() { this.lines = new ArrayList<>(); }
 
     public static LineCanvas getInstance() {
         if (instance == null) {
@@ -20,40 +18,30 @@ public class LineCanvas {
         return instance;
     }
 
-    public void addLine(Line line) {
-        this.lines.add(line);
-    }
-
+    public void addLine(Line line) { this.lines.add(line); }
     public void clearLines() { this.lines.clear(); }
-
-    public void removeLineAt(int index) { this.lines.remove(index); }
+    public ArrayList<Line> getLines() { return lines; }
 
     public Line getLineById(int id) {
-        for (Line line : lines) {
-            if (line.getId() == id) {
-                return line;
+        for (Line line : lines) { // Iterate through every line
+            if (line.getId() == id) { // Look for matching id
+                return line; // If matching id is found, return it
             }
         }
-        return null;
+        return null; // Otherwise, if there is no matching id found, return null
     }
 
     public void disableLineById(int id) {
-        for (Line line : lines) {
-            if (line.getId() == id) {
-                line.disable();
-                return;
+        for (Line line : lines) { // Iterate through every line
+            if (line.getId() == id) { // Look for matching id
+                line.disable(); // If matching id is found, disable given line
+                return; // Return, because id should be unique
             }
         }
     }
 
     public void editLineById(int id, Line newLine) {
-        lines.remove(getLineById(id));
-        lines.add(newLine);
-    }
-
-    public Line getLineAt(int index) { return this.lines.get(index); }
-
-    public ArrayList<Line> getLines() {
-        return lines;
+        lines.remove(getLineById(id)); // Remove old line
+        lines.add(newLine); // Add new line
     }
 }

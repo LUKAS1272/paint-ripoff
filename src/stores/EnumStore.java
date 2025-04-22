@@ -1,8 +1,6 @@
 package stores;
 
-import controllers.PolygonController;
 import enums.*;
-import enums.storeEnums.Enum;
 
 import java.awt.*;
 
@@ -23,34 +21,11 @@ public class EnumStore {
         return instance;
     }
 
-    public void moveEnum(Enum enumType) {
-        switch (enumType) {
-            case Alignment:
-                Alignment[] allAlignments = Alignment.values(); // Gets all enum object
-                alignment = allAlignments[(alignment.ordinal() + 1) % allAlignments.length]; // Assigns next enum object
-                break;
-            case LineType:
-                LineType[] allLineTypes = LineType.values(); // Gets all enum object
-                lineType = allLineTypes[(lineType.ordinal() + 1) % allLineTypes.length]; // Assigns next enum object
-                break;
-            case ActionType:
-                ActionType[] allActionTypes = ActionType.values(); // Gets all enum object
-                actionType = allActionTypes[(actionType.ordinal() + 1) % allActionTypes.length]; // Assigns next enum object
-
-                PolygonController.getInstance().clearPoint();
-                break;
-            case DrawColor:
-                DrawColor[] allDrawColors = DrawColor.values(); // Gets all enum object
-                drawColor = allDrawColors[(drawColor.ordinal() + 1) % allDrawColors.length]; // Assigns next enum object
-                break;
-        }
-    }
-
-    public Color getDrawColor() {
+    public Color getDrawColor() { // Gets the color value of current drawColor
         return getColor(drawColor);
     }
 
-    private Color getColor(DrawColor drawColor) {
+    private Color getColor(DrawColor drawColor) { // Get the color value of given drawColor
         return switch (drawColor) {
             case White -> Color.white;
             case Red -> Color.red;
@@ -59,7 +34,6 @@ public class EnumStore {
             case Yellow -> Color.yellow;
             case Magenta -> Color.magenta;
             case Cyan -> Color.cyan;
-            default -> null;
         };
     }
 }

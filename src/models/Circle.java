@@ -18,18 +18,14 @@ public class Circle {
     private Color color;
     private int thickness;
 
-    private Point firstPoint;
-    private Point secondPoint;
-
     public Circle(Point firstPoint, Point secondPoint, int id) {
-        this.firstPoint = firstPoint;
         this.color = EnumStore.getInstance().getDrawColor();
         this.id = id;
-        editCircle(firstPoint, secondPoint);
+        createCircle(firstPoint, secondPoint);
     }
 
-    public void editCircle(Point firstPoint, Point secondPoint) {
-        this.thickness = StateStore.getInstance().getThickness();
+    public void createCircle(Point firstPoint, Point secondPoint) {
+        this.thickness = StateStore.getInstance().getThickness(); // Load thickness from store
 
         int xDiff = secondPoint.getX() - firstPoint.getX();
         int yDiff = secondPoint.getY() - firstPoint.getY();
@@ -43,6 +39,17 @@ public class Circle {
         center = new Point(firstPoint.getX() + radius * xSign, firstPoint.getY() + radius * ySign); // Create a center point (first point + directed radius on both axis)
     }
 
+    public void updateProperties() {
+        Renderer.getInstance().renderCircle(this, true); // Unrender
+
+        color = EnumStore.getInstance().getDrawColor(); // Update this circle's color from store
+        thickness = StateStore.getInstance().getThickness(); // Update this circle's thickness from store
+
+        // Rerender
+        Renderer.getInstance().renderCircle(this, false);
+        Frame.getInstance().getPanel().repaint();
+    }
+
     public void alterCenter(int xDiff, int yDiff) { center = new Point(center.getX() + xDiff, center.getY() + yDiff); }
 
     public int getRadius() { return this.radius; }
@@ -52,17 +59,6 @@ public class Circle {
     public int getThickness() { return this.thickness; }
 
     public Color getColor() { return this.color; }
-
-    public void updateProperties() {
-        Renderer.getInstance().renderCircle(this, true); // Unrender
-
-        color = EnumStore.getInstance().getDrawColor();
-        thickness = StateStore.getInstance().getThickness();
-
-        // Rerender
-        Renderer.getInstance().renderCircle(this, false);
-        Frame.getInstance().getPanel().repaint();
-    }
 
     public int getId() { return this.id; }
 

@@ -19,34 +19,32 @@ public class RectangleCanvas {
         return instance;
     }
 
-    public void addRectangle(Rectangle rectangle) {
-        this.rectangles.add(rectangle);
-    }
-
+    public void addRectangle(Rectangle rectangle) { this.rectangles.add(rectangle); }
     public void clearRectangles() { this.rectangles.clear(); }
 
     public Rectangle getRectangleById(int id) {
-        for (Rectangle rectangle : rectangles) {
-            if (rectangle.getId() == id) {
-                return rectangle;
+        for (Rectangle rectangle : rectangles) { // Iterate through every rectangle
+            if (rectangle.getId() == id) { // Look for matching id
+                return rectangle; // If matching id is found, return it
             }
         }
-        return null;
+        return null; // Otherwise, if there is no matching id found, return null
     }
 
     public void disableRectangleById(int id) {
-        for (Rectangle rectangle : rectangles) {
-            if (rectangle.getId() == id) {
-                rectangle.disable();
-                return;
+        for (Rectangle rectangle : rectangles) { // Iterate through every rectangle
+            if (rectangle.getId() == id) { // Look for matching id
+                rectangle.disable(); // If matching id is found, disable given rectangle
+                return; // Return, because id should be unique
             }
         }
     }
 
     public void editRectangleById(Point firstPoint, Point secondPoint, int id) {
-        Rectangle rectangleToEdit = getRectangleById(id);
-        rectangles.remove(rectangleToEdit);
-        rectangleToEdit.createFromTwoPoints(firstPoint, secondPoint);
-        rectangles.add(rectangleToEdit);
+        Rectangle rectangleToEdit = getRectangleById(id); // Get old rectangle
+        rectangles.remove(rectangleToEdit); // Remove old rectangle
+
+        rectangleToEdit.createFromTwoPoints(firstPoint, secondPoint); // Edit old rectangle
+        rectangles.add(rectangleToEdit); // Add new rectangle
     }
 }

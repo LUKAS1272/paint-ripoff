@@ -8,43 +8,37 @@ import java.awt.Color;
 public class Line {
     private boolean editable = true;
 
-    private Point point1;
-    private Point point2;
+    private Point firstPoint;
+    private Point secondPoint;
+
+    private int id;
+    
     private Color color;
     private LineType lineType;
     private Alignment alignment;
     private int thickness;
-    private int id;
 
-    public Line(Point point1, Point point2, Color color, LineType lineType, Alignment alignment, int thickness, int id) {
-        this.point1 = point1;
-        this.point2 = point2;
+    public Line(Point firstPoint, Point secondPoint, Color color, LineType lineType, Alignment alignment, int thickness, int id) {
+        this.firstPoint = firstPoint;
+        this.secondPoint = secondPoint;
+
+        this.id = id;
+
         this.color = color;
         this.lineType = lineType;
         this.alignment = alignment;
         this.thickness = thickness;
-        this.id = id;
     }
 
-    public Point getPoint1() {
-        return point1;
-    }
+    public Point getPoint1() { return firstPoint; }
 
-    public Point getPoint2() {
-        return point2;
-    }
+    public Point getPoint2() { return secondPoint; }
 
-    public Color getColor() {
-        return color;
-    }
+    public Color getColor() { return color; }
 
-    public LineType getLineType() {
-        return lineType;
-    }
+    public LineType getLineType() { return lineType; }
 
-    public Alignment getAlignment() {
-        return alignment;
-    }
+    public Alignment getAlignment() { return alignment; }
 
     public int getThickness() { return thickness; }
 
@@ -55,7 +49,7 @@ public class Line {
     public boolean getEditable() { return editable; }
 
     public void alterPoints(int xDiff, int yDiff) {
-        point1 = new Point(point1.getX() + xDiff, point1.getY() + yDiff);
-        point2 = new Point(point2.getX() + xDiff, point2.getY() + yDiff);
+        firstPoint = new Point(firstPoint.getX() + xDiff, firstPoint.getY() + yDiff);
+        secondPoint = new Point(secondPoint.getX() + xDiff, secondPoint.getY() + yDiff);
     }
 }

@@ -28,44 +28,48 @@ public class TrivialLineRasterizer implements Rasterizer {
         int xDiff = x2 - x1;
         int yDiff = y2 - y1;
 
-        if (xDiff == 0 && yDiff == 0) { return; }
+        if (xDiff == 0 && yDiff == 0) { return; } // If the axis differences are null, there is nothing to render
 
-        if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
-                float k = (float) yDiff / xDiff;
-                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
+        if (Math.abs(xDiff) >= Math.abs(yDiff)) { // Horizontal like line
+            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) { // Iterate for every thickness layer
+                float k = (float) yDiff / xDiff; // Get the tilt coefficient
+                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); } // Rounding the coefficient results in snapping the line by 45° angles
                 float q = y1 - (k * x1);
 
+                // Operate as greater / lesser X to be able to draw both LTR and RTL lines
                 int greaterX = Math.max(x1, x2);
                 int lesserX = Math.min(x1, x2);
 
                 for (int x = lesserX; x <= greaterX; x++) {
-                    int y = Math.round(k * x + q);
+                    int y = Math.round(k * x + q); // Calculate the Y axis of the pixel
 
+                    // Adjust the Y to paint another layer
                     if (layerNumber % 2 == 0) { y += layerNumber / 2; }
                     else { y -= (layerNumber + 1) / 2; }
 
-                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Line, line.getId());
-                    RasterBuffer.getInstance().setPixel(x, y, bufferOverride != null ? bufferOverride : targetBuffer, removeMode);
+                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Line, line.getId()); // Get line's buffer value (Line, id 5 = "L5")
+                    RasterBuffer.getInstance().setPixel(x, y, bufferOverride != null ? bufferOverride : targetBuffer, removeMode); // If there is a bufferOverride set, override the target buffer (override happens when a line is used to form a different object e.g. polygon)
                 }
             }
-        } else {
-            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) {
-                float k = (float) xDiff / yDiff;
-                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); }
+        } else { // Vertical like line
+            for (int layerNumber = 0; layerNumber < line.getThickness(); layerNumber++) { // Iterate for every thickness layer
+                float k = (float) xDiff / yDiff; // Get the tilt coefficient
+                if (line.getAlignment() == Alignment.Aligned) { k = Math.round(k); } // Rounding the coefficient results in snapping the line by 45° angles
                 float q = x1 - (k * y1);
 
+                // Operate as greater / lesser Y to be able to draw both ATB and BTA lines
                 int greaterY = Math.max(y1, y2);
                 int lesserY = Math.min(y1, y2);
 
                 for (int y = lesserY; y <= greaterY; y++) {
-                    int x = Math.round(k * y + q);
+                    int x = Math.round(k * y + q); // Calculate the X axis of the pixel
 
+                    // Adjust the X to paint another layer
                     if (layerNumber % 2 == 0) { x += layerNumber / 2; }
                     else { x -= (layerNumber + 1) / 2; }
 
-                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Line, line.getId());
-                    RasterBuffer.getInstance().setPixel(x, y, bufferOverride != null ? bufferOverride : targetBuffer, removeMode);
+                    String targetBuffer = RasterBuffer.getInstance().buildBufferId(ActionType.Line, line.getId()); // Get line's buffer value (Line, id 5 = "L5")
+                    RasterBuffer.getInstance().setPixel(x, y, bufferOverride != null ? bufferOverride : targetBuffer, removeMode); // If there is a bufferOverride set, override the target buffer (override happens when a line is used to form a different object e.g. polygon)
                 }
             }
         }

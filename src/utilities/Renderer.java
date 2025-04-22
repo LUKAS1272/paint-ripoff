@@ -29,11 +29,11 @@ public class Renderer {
         return instance;
     }
 
-    public void rerender()  {
+    public void rerender() { // Re-renders the frame
         Frame.getInstance().getPanel().repaint();
     }
 
-    public void clear() { // Clears the canvas and rerenders frame
+    public void clear() { // Clears the canvas and re-renders frame
         LineCanvas.getInstance().clearLines();
         PolygonCanvas.getInstance().clearPolygons();
         RectangleCanvas.getInstance().clearRectangles();

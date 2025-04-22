@@ -33,9 +33,7 @@ public class RectangleController {
         currentId = id;
     }
 
-    public void clearPoint() {
-        point = null;
-    }
+    public void clearPoint() { point = null; }
 
     public void createRectangle(int x, int y) {
         if (point == null) {
@@ -44,25 +42,26 @@ public class RectangleController {
 
             RectangleCanvas.getInstance().addRectangle(rectangle); // Add currently drawn rectangle to the canvas
         } else {
-            RectangleCanvas.getInstance().getRectangleById(currentId).updateProperties();
-            Point point2 = new Point(x, y);
+            RectangleCanvas.getInstance().getRectangleById(currentId).updateProperties(); // Update rectangle's properties (color, line type...)
 
-            Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
-            Renderer.getInstance().renderLines(oldRectangle.getLines(), true, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Remove
+            Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(currentId); // Get old rectagnle
+            Renderer.getInstance().renderLines(oldRectangle.getLines(), true, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Remove old rectangle
 
-            RectangleCanvas.getInstance().editRectangleById(point, point2, currentId);
-            Rectangle newRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
-            Renderer.getInstance().renderLines(newRectangle.getLines(), false, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Add
+            Point point2 = new Point(x, y); // Create a second corner point on click cords
+            RectangleCanvas.getInstance().editRectangleById(point, point2, currentId); // Change rectangle's corner points
+            Rectangle newRectangle = RectangleCanvas.getInstance().getRectangleById(currentId); // Get new rectangle
+            Renderer.getInstance().renderLines(newRectangle.getLines(), false, RasterBuffer.getInstance().buildBufferId(ActionType.Rectangle, currentId)); // Add new rectangle
 
             Renderer.getInstance().rerender();
         }
     }
 
     public void edit(String object, int editX, int editY) {
-        currentId = Integer.parseInt(object.substring(1));
+        currentId = Integer.parseInt(object.substring(1)); // Get object id from object identifier
 
-        Rectangle editedRectangle = RectangleCanvas.getInstance().getRectangleById(currentId);
+        Rectangle editedRectangle = RectangleCanvas.getInstance().getRectangleById(currentId); // Get edited rectangle
 
+        // Find the furthest corner point from clicked pixel
         Point furthestPoint = null;
         float furthestPointDistance = 0;
         for (Point rectanglePoint : editedRectangle.getPoints()) {
@@ -71,14 +70,14 @@ public class RectangleController {
                 furthestPointDistance = HelperFunctions.getInstance().getDistance(rectanglePoint, editX, editY);
             }
         }
-        point = furthestPoint;
+        point = furthestPoint; // Set the furthest point as the starting point for a rectangle
     }
 
     public void changePointsOf(int id, int xDiff, int yDiff) {
-        Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(id);
-        Renderer.getInstance().renderLines(oldRectangle.getLines(), true, "R" + id); // Remove
+        Rectangle oldRectangle = RectangleCanvas.getInstance().getRectangleById(id); // Get the old rectangle
+        Renderer.getInstance().renderLines(oldRectangle.getLines(), true, "R" + id); // Unrender the old rectangle
 
-        oldRectangle.alterPoints(xDiff, yDiff);
-        Renderer.getInstance().renderLines(oldRectangle.getLines(), false, "R" + id); // Add
+        oldRectangle.alterPoints(xDiff, yDiff); // Move the old rectangle
+        Renderer.getInstance().renderLines(oldRectangle.getLines(), false, "R" + id); // Render the new rectangle
     }
 }

@@ -1,7 +1,7 @@
 # TODO
 
 - [x] User interface
-- [ ] Code optimization
-- [ ] Code comments
+- [ ] Move alterPoints and getLines to HelperFunctions
+- [x] Code comments
 - [ ] Documentation
 - [ ] Filler painting over objects (bug fix)
