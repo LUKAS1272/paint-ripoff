@@ -60,23 +60,6 @@ public class Polygon {
         Frame.getInstance().getPanel().repaint();
     }
 
-//    public ArrayList<Line> getLines() {
-//        ArrayList<Line> lines = new ArrayList<>(); // Create a list to store lines
-//        if (points.size() < 2) { return lines; } // If there are not at least 2 points to form a line, return empty array
-//
-//        Point firstPoint, secondPoint;
-//
-//        for (int i = 1; i <= points.size(); i++) { // Iterate through every possible starting point
-//            firstPoint = points.get(i - 1); // Assign starting point
-//            secondPoint = points.get(i % points.size()); // Starting point index + 1 (modulo prevents overflowing)
-//
-//            Line polygonLine = new Line(firstPoint, secondPoint, color, lineType, Alignment.Unaligned, thickness, -1); // Create a line
-//            lines.add(polygonLine); // Add line to the list
-//        }
-//
-//        return lines; // Return generated lines
-//    }
-
     public void editPoint(int index, int x, int y) { // Edits point with certain index to be on the cords xy
         ArrayList<Point> oldPoints = getPoints(); // Gets old points to iterate through
         points = new ArrayList<>(); // Clears current points
